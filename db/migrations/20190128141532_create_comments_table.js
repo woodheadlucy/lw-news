@@ -1,4 +1,5 @@
 exports.up = function (connection, Promise) {
+  console.log('creating comments table');
   return connection.schema.createTable('comments', (commentsTable) => {
     commentsTable.increments('comment_id').primary();
     commentsTable
@@ -9,8 +10,11 @@ exports.up = function (connection, Promise) {
       .integer('article_id')
       .references('articles.article_id')
       .notNullable();
-    commentsTable.integer('votes').defaultTo(0);
-    commentsTable.timestamps('created_at');
+    commentsTable
+      .integer('votes')
+      .defaultTo(0)
+      .notNullable();
+    commentsTable.timestamp('created_at').defaultTo(connection.fn.now());
     commentsTable.text('body');
   });
 };

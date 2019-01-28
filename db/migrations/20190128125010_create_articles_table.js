@@ -1,6 +1,6 @@
 exports.up = function (connection, Promise) {
+  console.log('creating articles table');
   return connection.schema.createTable('articles', (articlesTable) => {
-    console.log('creating articles table');
     articlesTable.increments('article_id').primary();
     articlesTable.string('title').notNullable();
     articlesTable.text('body').notNullable();
@@ -16,7 +16,7 @@ exports.up = function (connection, Promise) {
       .string('username')
       .references('users.username')
       .notNullable();
-    articlesTable.timestamps('created_at');
+    articlesTable.timestamp('created_at').defaultTo(connection.fn.now());
   });
 };
 
