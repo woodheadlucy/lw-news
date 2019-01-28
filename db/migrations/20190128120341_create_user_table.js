@@ -1,5 +1,6 @@
-exports.up = function(connection, Promise) {
-  return connection.schema.createTable('users', userTable => {
+exports.up = function (connection, Promise) {
+  return connection.schema.createTable('users', (userTable) => {
+    console.log('creating users table');
     userTable
       .string('username')
       .primary()
@@ -9,7 +10,7 @@ exports.up = function(connection, Promise) {
   });
 };
 
-exports.down = function(connection, Promise) {
+exports.down = function (connection, Promise) {
   console.log('dropping users table');
   return connection.schema.dropTable('users');
 };

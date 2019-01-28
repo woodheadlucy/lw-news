@@ -1,8 +1,7 @@
-exports.up = function(connection, Promise) {
-  console.log('creating articles table');
-
-  return conneciton.schema.createTable('articles', articlesTable => {
-    articlesTable.increment('article_id').primary();
+exports.up = function (connection, Promise) {
+  return connection.schema.createTable('articles', (articlesTable) => {
+    console.log('creating articles table');
+    articlesTable.increments('article_id').primary();
     articlesTable.string('title').notNullable();
     articlesTable.text('body').notNullable();
     articlesTable
@@ -13,12 +12,15 @@ exports.up = function(connection, Promise) {
       .string('topic')
       .references('topics.slug')
       .notNullable();
-    articlesTables
+    articlesTable
       .string('username')
       .references('users.username')
       .notNullable();
-    articlesTable.timestamp('created_at').defaultTo(knex.fn.now());
+    articlesTable.timestamps('created_at');
   });
 };
 
-exports.down = function(connection, Promise) {};
+exports.down = function (connection, Promise) {
+  console.log('dropping articles table');
+  return connection.schema.dropTable('articles');
+};
