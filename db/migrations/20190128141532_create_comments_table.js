@@ -5,11 +5,11 @@ exports.up = function (connection, Promise) {
     commentsTable
       .string('username')
       .references('users.username')
-      .notNullable();
+      .onDelete('CASCADE');
     commentsTable
       .integer('article_id')
       .references('articles.article_id')
-      .notNullable();
+      .onDelete('CASCADE');
     commentsTable
       .integer('votes')
       .defaultTo(0)
