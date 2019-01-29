@@ -1,12 +1,3 @@
-
-//
-exports.userRef = users => users.reduce((userObj, userCurr) => {
-  userObj[userCurr.username] = userCurr.username;
-  console.log(userObj);
-  return userObj;
-}, {});
-
-
 exports.formatArticles = (article) => {
   const formattedArticles = article.map(({
     created_by, created_at, title, topic, body,
@@ -24,6 +15,8 @@ exports.formatArticles = (article) => {
 
 exports.articleRef = articles => articles.reduce((articleObj, articleCurr) => {
   articleObj[articleCurr.title] = articleCurr.article_id;
+
+
   return articleObj;
 }, {});
 
