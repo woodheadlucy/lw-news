@@ -15,3 +15,12 @@ exports.handle400 = (err, req, res, next) => {
   if (errorCodes400[code]) res.status(400).send({ message: errorCodes400[code] });
   else next(err);
 };
+
+
+exports.handle422 = (err, req, res, next) => {
+  res.status(422).send({});
+};
+exports.handle500 = (err, req, res, next) => {
+  res.status(500).send({});
+}
+;

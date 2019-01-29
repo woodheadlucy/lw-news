@@ -48,10 +48,10 @@ describe('/api', () => {
   // api/topics/:topic/articles
 
   xdescribe('/api/topics/:topic/articles', () => {
-    it.only('GET status: 200 with the articles for a chosen topic', () => request.get('/api/topics/mitch/articles').expect(200).then((res) => {
+    it('GET status: 200 with the articles for a chosen topic', () => request.get('/api/topics/mitch/articles').expect(200).then((res) => {
       console.log(res.body.articles);
       expect(res.body.articles).to.be.an('array');
-      expect(res.body.articles[0]).to.contains.keys('author', 'title', 'article_id', 'votes', 'comment_count', 'created_at', 'topic');
+      expect(res.body.articles[0]).to.have.keys('author', 'title', 'article_id', 'votes', 'comment_count', 'created_at', 'topic', 'body');
     }));
   });
 });
