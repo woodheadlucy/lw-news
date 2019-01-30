@@ -28,6 +28,7 @@ exports.getArticlesByTopic = (req, res, next) => {
 
   // console.log(req.query.p, '<<<pageeee');
 
+
   fetchArticlesByTopic(chosenTopic, chosenLimit, chosenSort, chosenPage, chosenOrder).then((articles) => {
     res.status(200).send(({ articles }));
   }).catch(next);

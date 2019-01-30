@@ -12,4 +12,4 @@ exports.fetchArticlesByTopic = (chosenTopic, defaultLimit = 10, defaultSort = 'c
   .returning('*')
   .limit(defaultLimit)
   .offset((defaultPage - 1) * defaultLimit)
-  .orderBy(defaultSort, 'ASC');
+  .orderBy(defaultSort, defaultOrder);
