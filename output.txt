@@ -1,4 +1,4 @@
-You are now connected to database "nc_news" as user "lucywoodhead".
+You are now connected to database "nc_news_test" as user "lucywoodhead".
                   List of relations
  Schema |         Name         | Type  |    Owner     
 --------+----------------------+-------+--------------
@@ -10,43 +10,18 @@ You are now connected to database "nc_news" as user "lucywoodhead".
  public | users                | table | lucywoodhead
 (6 rows)
 
- article_id |                                         title                                         |    author    | votes |         created_at         |  topic   | comment_count 
-------------+---------------------------------------------------------------------------------------+--------------+-------+----------------------------+----------+---------------
-          3 | 22 Amazing open source React projects                                                 | happyamy2016 |     0 | 2017-07-21 18:54:10.346+01 | coding   |            10
-         29 | A BRIEF HISTORY OF FOOD—NO BIG DEAL                                                   | tickle122    |     0 | 2017-03-11 13:20:18.573+00 | cooking  |            10
-         21 | Agility Training Drills For Football Players                                          | tickle122    |     0 | 2016-10-06 03:25:06.725+01 | football |             8
-         10 | An Introduction to JavaScript Object Notation (JSON) in JavaScript and .NET           | cooljmessy   |     0 | 2016-10-29 03:24:09.225+01 | coding   |             8
-         22 | Defensive Metrics: Measuring the Intensity of a High Press                            | tickle122    |     0 | 2017-01-26 05:58:25.946+00 | football |             8
-         11 | Designing Better JavaScript APIs                                                      | tickle122    |     0 | 2017-11-10 16:41:01.78+00  | coding   |             5
-          8 | Express.js: A Server-Side JavaScript Framework                                        | cooljmessy   |     0 | 2016-06-30 07:59:39.654+01 | coding   |             7
-         24 | Game of talents: management lessons from top football coaches                         | jessjelly    |     0 | 2017-04-01 11:54:48.304+01 | football |             5
-         26 | HOW COOKING HAS CHANGED US                                                            | weegembump   |     0 | 2017-04-21 13:34:54.761+01 | cooking  |            11
-         32 | Halal food: Keeping pure and true                                                     | grumpy19     |     0 | 2017-08-16 08:47:21.66+01  | cooking  |             5
-         28 | High Altitude Cooking                                                                 | happyamy2016 |     0 | 2018-05-27 04:32:28.514+01 | cooking  |             5
-         16 | History of FC Barcelona                                                               | weegembump   |     0 | 2018-02-17 20:38:43.448+00 | football |            16
-         20 | History of Football                                                                   | tickle122    |     0 | 2017-10-10 09:18:16.497+01 | football |             5
-          6 | JavaScript’s Apply, Call, and Bind Methods are Essential for JavaScript Professionals | grumpy19     |     0 | 2018-03-14 10:27:39.137+00 | coding   |            11
-          9 | Learn HTML5, CSS3, and Responsive WebSite Design in One Go                            | grumpy19     |     0 | 2017-03-06 02:22:14.447+00 | coding   |             8
-          4 | Making sense of Redux                                                                 | jessjelly    |     0 | 2017-12-24 05:38:51.24+00  | coding   |             9
-          5 | Please stop worrying about Angular 3                                                  | jessjelly    |     0 | 2016-10-24 05:13:02.648+01 | coding   |             6
-          1 | Running a Node App                                                                    | jessjelly    |     0 | 2016-08-18 13:07:52.389+01 | coding   |             8
-         33 | Seafood substitutions are increasing                                                  | weegembump   |     0 | 2018-05-30 16:59:13.341+01 | cooking  |             6
-         35 | Stone Soup                                                                            | cooljmessy   |     0 | 2016-12-13 20:58:40.516+00 | cooking  |            14
-         23 | Sunday league football                                                                | weegembump   |     0 | 2016-11-18 11:55:24.415+00 | football |            14
-         25 | Sweet potato & butternut squash soup with lemon & garlic toast                        | weegembump   |     0 | 2017-08-18 10:25:14.275+01 | cooking  |             4
-         27 | Thanksgiving Drinks for Everyone                                                      | grumpy19     |     0 | 2017-04-23 19:00:55.514+01 | cooking  |            13
-         34 | The Notorious MSG’s Unlikely Formula For Success                                      | grumpy19     |     0 | 2017-08-16 23:08:30.43+01  | cooking  |            11
-         18 | The People Tracking Every Touch, Pass And Tackle in the World Cup                     | grumpy19     |     0 | 2018-03-28 04:03:58.717+01 | football |             8
-          2 | The Rise Of Thinking Machines: How IBM's Watson Takes On The World                    | jessjelly    |     0 | 2017-07-20 21:57:53.256+01 | coding   |             6
-         12 | The battle for Node.js security has only begun                                        | tickle122    |     0 | 2017-07-17 12:34:54.879+01 | coding   |             7
-         36 | The vegan carnivore?                                                                  | tickle122    |     0 | 2017-04-14 10:56:23.248+01 | cooking  |             6
-         30 | Twice-Baked Butternut Squash Is the Thanksgiving Side Dish of Your Dreams             | jessjelly    |     0 | 2018-05-06 03:40:35.489+01 | cooking  |             8
-          7 | Using React Native: One Year Later                                                    | tickle122    |     0 | 2016-12-07 21:37:26.335+00 | coding   |             8
-         13 | What does Jose Mourinho's handwriting say about his personality?                      | weegembump   |     0 | 2018-04-16 20:29:32.774+01 | football |             6
-         31 | What to Cook This Week                                                                | tickle122    |     0 | 2017-11-05 07:22:43.519+00 | cooking  |            12
-         17 | Which current Premier League manager was the best player?                             | cooljmessy   |     0 | 2016-07-12 22:43:31.74+01  | football |            12
-         14 | Who Will Manage Your Club in 2021?                                                    | happyamy2016 |     0 | 2016-08-25 18:08:25.177+01 | football |             3
-         19 | Who are the most followed clubs and players on Instagram?                             | jessjelly    |     0 | 2017-07-26 17:49:01.355+01 | football |            13
-         15 | Why do England managers keep making the same mistakes?                                | tickle122    |     0 | 2017-03-13 18:28:30.045+00 | football |             4
-(36 rows)
+ article_id |                         title                          |    author     | votes |         created_at         | topic | comment_count 
+------------+--------------------------------------------------------+---------------+-------+----------------------------+-------+---------------
+          1 | Living in the shadow of a great man                    | butter_bridge |     0 | 2018-11-15 12:21:54.171+00 | mitch |            13
+          2 | Sony Vaio; or, The Laptop                              | icellusedkars |     0 | 2014-11-16 12:21:54.171+00 | mitch |             0
+          3 | Eight pug gifs that remind me of mitch                 | icellusedkars |     0 | 2010-11-17 12:21:54.171+00 | mitch |             0
+          4 | Student SUES Mitch!                                    | rogersop      |     0 | 2006-11-18 12:21:54.171+00 | mitch |             0
+          6 | A                                                      | icellusedkars |     0 | 1998-11-20 12:21:54.171+00 | mitch |             1
+          7 | Z                                                      | icellusedkars |     0 | 1994-11-21 12:21:54.171+00 | mitch |             0
+          8 | Does Mitch predate civilisation?                       | icellusedkars |     0 | 1990-11-22 12:21:54.171+00 | mitch |             0
+          9 | They're not exactly dogs, are they?                    | butter_bridge |     0 | 1986-11-23 12:21:54.171+00 | mitch |             2
+         10 | Seven inspirational thought leaders from Manchester UK | rogersop      |     0 | 1982-11-24 12:21:54.171+00 | mitch |             0
+         11 | Am I a cat?                                            | icellusedkars |     0 | 1978-11-25 12:21:54.171+00 | mitch |             0
+         12 | Moustache                                              | butter_bridge |     0 | 1974-11-26 12:21:54.171+00 | mitch |             0
+(11 rows)
 

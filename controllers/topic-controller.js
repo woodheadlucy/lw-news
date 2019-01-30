@@ -1,7 +1,7 @@
 
 // TOPIC CONTROLLER!!
 
-const { fetchTopics, insertNewTopic, fetchTopicsByArticle } = require('../db/models/topics');
+const { fetchTopics, insertNewTopic, fetchArticlesByTopic } = require('../db/models/topics');
 
 exports.getTopics = (req, res, next) => {
   fetchTopics().then((topics) => {
@@ -23,9 +23,12 @@ exports.getArticlesByTopic = (req, res, next) => {
   const chosenTopic = req.params.topic;
   const chosenLimit = req.query.limit;
   const chosenSort = req.query.sort_by;
-  console.log(chosenLimit);
+  const chosenPage = req.query.p;
+  const chosenOrder = req.query.order;
 
-  fetchTopicsByArticle(chosenTopic, chosenLimit, chosenSort).then((articles) => {
+  // console.log(req.query.p, '<<<pageeee');
+
+  fetchArticlesByTopic(chosenTopic, chosenLimit, chosenSort, chosenPage, chosenOrder).then((articles) => {
     res.status(200).send(({ articles }));
   }).catch(next);
 };
