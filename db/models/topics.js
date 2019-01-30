@@ -13,3 +13,8 @@ exports.fetchArticlesByTopic = (chosenTopic, defaultLimit = 10, defaultSort = 'c
   .limit(defaultLimit)
   .offset((defaultPage - 1) * defaultLimit)
   .orderBy(defaultSort, defaultOrder);
+
+
+exports.insertNewArticle = () => connection.insert({
+
+}).into('articles').returning('*');
