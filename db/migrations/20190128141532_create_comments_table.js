@@ -1,5 +1,5 @@
 exports.up = function (connection, Promise) {
-  console.log('creating comments table');
+  // console.log('creating comments table');
   return connection.schema.createTable('comments', (commentsTable) => {
     commentsTable.increments('comment_id').primary();
     commentsTable
@@ -20,6 +20,6 @@ exports.up = function (connection, Promise) {
 };
 
 exports.down = function (connection, Promise) {
-  console.log('dropping comments table');
+  // console.log('dropping comments table');
   return connection.schema.dropTable('comments');
 };

@@ -1,5 +1,5 @@
 exports.up = function (connection, Promise) {
-  console.log('creating topics table');
+  // console.log('creating topics table');
   return connection.schema.createTable('topics', (topicsTable) => {
     topicsTable
       .string('slug')
@@ -10,6 +10,6 @@ exports.up = function (connection, Promise) {
 };
 
 exports.down = function (connection, Promise) {
-  console.log('dropping topics tables');
+  // console.log('dropping topics tables');
   return connection.schema.dropTable('topics');
 };

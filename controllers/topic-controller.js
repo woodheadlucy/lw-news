@@ -21,9 +21,11 @@ exports.addTopic = (req, res, next) => {
 
 exports.getArticlesByTopic = (req, res, next) => {
   const chosenTopic = req.params.topic;
+  const chosenLimit = req.query.limit;
+  const chosenSort = req.query.sort_by;
+  console.log(chosenLimit);
 
-  fetchTopicsByArticle(chosenTopic).then((articles) => {
-    // console.log(topics);
+  fetchTopicsByArticle(chosenTopic, chosenLimit, chosenSort).then((articles) => {
     res.status(200).send(({ articles }));
   }).catch(next);
 };
