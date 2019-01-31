@@ -17,9 +17,10 @@ exports.handle400 = (err, req, res, next) => {
 };
 
 
-exports.handle422 = (err, req, res, next) => {
-  res.status(422).send({});
-};
+// exports.handle422 = (err, req, res, next) => {
+//   res.status(422).send({});
+// };
 exports.handle500 = (err, req, res, next) => {
-  res.status(500).send({});
+  console.log(err);
+  res.status(500).send({ message: 'internal server error' });
 };

@@ -161,46 +161,75 @@ describe('/api', () => {
       it('PATCH status: 200 can increment the votes on an article and respond with updated article', () => {
         const newVote = 1;
         return request.patch('/api/articles/1').send({ inc_votes: newVote }).expect(200).then(({ body }) => {
-          console.log(body.article.votes, '<<< votes');
+          // console.log(body.article.votes, '<<< votes');
           expect(body.article.votes).to.equal(1);
         });
       });
+      it('PATCH status 200 returns the article with the vote unchanged', () => {
+        const newVote = 0;
+        return request.patch('/api/articles/1').send({ inc_votes: newVote }).expect(200).then(({ body }) => {
+          // console.log(body.article.votes, '<<< votes');
+          expect(body.article.votes).to.equal(0);
+        });
+      });
+      it('PATCH status 200 downvotes an article', () => {
+        const newVote = -2;
+        return request.patch('/api/articles/1').send({ inc_votes: newVote }).expect(200).then(({ body }) => {
+          // console.log(body.article.votes, '<<< votes');
+          expect(body.article.votes).to.equal(-2);
+        });
+      });
+      // DELETE AN ARTICLE BY ID
+
+
+      it('DELETE status: 204 removes an article by id', () => request.delete('/api/articles/3').expect(204));
+    });
+
+
+    describe('/api/articles/:article_id/comments', () => {
+      it('GET status: 200 and returns the comments associated with the chosen article', () => request.get('/api/articles/9/comments').expect(200).then(({ body }) => {
+        console.log(body.comments[0], '<<< test');
+        expect(body.comments).to.be.an('array');
+        expect(body.comments[0]).to.contains.keys('comment_id', 'votes', 'created_at', 'username', 'body');
+      }));
+
+      // LIMITS ON COMMENTS
+      it('GET status: 200  ');
     });
   });
-
-
-  // ////// USERS
-  // xdescribe('/users', () => {
-  //   it('GET status: 200 with an array of user objects', () => request.get('/api/users').expect(200).then((res) => {
-  //     expect(res.body.users).to.be.an('array');
-  //     // console.log(res.body.users);
-  //     expect(res.body.users.length).to.equal(3);
-  //   }));
-  //   it('POST status: 201 sends a new user object', () => {
-  //     const newUser = {
-  //       avatar_url: 'www.google.com/1o3i4h123',
-  //       name: 'lucy woodhead',
-  //       username: 'woo100',
-
-
-  //     };
-  //     return request.send(newUser)
-  //       .expect(201)
-  //       .then((res) => {
-  //         expect(res.body.user).to.be.an('object');
-  //         expect(res.body.user.username).to.eql('woo100');
-  //       });
-  //   });
-  // });
-  //   describe('/users/:username', () => {
-  //     it('GET should return 200 and an array of user objects', () => request.get('/api/users/1')
-  //       .expect(200)
-  //       .then(({ body }) => {
-  //         expect(body).to.be.an('object');
-  //         expect(body).to.have.all.keys('avatar_url', 'name', 'username');
-  //       }));
-  //   });
 });
+// ////// USERS
+// xdescribe('/users', () => {
+//   it('GET status: 200 with an array of user objects', () => request.get('/api/users').expect(200).then((res) => {
+//     expect(res.body.users).to.be.an('array');
+//     // console.log(res.body.users);
+//     expect(res.body.users.length).to.equal(3);
+//   }));
+//   it('POST status: 201 sends a new user object', () => {
+//     const newUser = {
+//       avatar_url: 'www.google.com/1o3i4h123',
+//       name: 'lucy woodhead',
+//       username: 'woo100',
+
+
+//     };
+//     return request.send(newUser)
+//       .expect(201)
+//       .then((res) => {
+//         expect(res.body.user).to.be.an('object');
+//         expect(res.body.user.username).to.eql('woo100');
+//       });
+//   });
+// });
+//   describe('/users/:username', () => {
+//     it('GET should return 200 and an array of user objects', () => request.get('/api/users/1')
+//       .expect(200)
+//       .then(({ body }) => {
+//         expect(body).to.be.an('object');
+//         expect(body).to.have.all.keys('avatar_url', 'name', 'username');
+//       }));
+//   });
+
 // // test errors!
 // it('GET status: 404 client uses non-existent article ID', () => request.get('/api/articles/321').expect(404));
 

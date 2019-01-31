@@ -1,5 +1,5 @@
 const {
-  fetchArticles, fetchArticleById, insertNewArticle, modifyVote,
+  fetchArticles, fetchArticleById, insertNewArticle, modifyVote, removeArticle, fetchComments,
 } = require('../db/models/articles');
 
 
@@ -35,5 +35,23 @@ exports.updateVote = (req, res, next) => {
   const { article_id } = req.params;
   modifyVote(article_id, inc_votes).then(([article]) => {
     res.status(200).send({ article });
+  }).catch(next);
+};
+
+
+exports.deleteArticle = (req, res, next) => {
+  const chosenArticleDelete = req.params;
+  // console.log(chosenArticleDelete, '<<<<< deleeete');
+  removeArticle(chosenArticleDelete).then(() => {
+    res.status(204).send();
+  }).catch(next);
+};
+
+
+exports.getComments = (req, res, next) => {
+  const chosenArticle = req.params.article_id;
+  console.log(chosenArticle, '<<<<<<<< control');
+  fetchComments(chosenArticle).then((comments) => {
+    res.status(200).send({ comments });
   }).catch(next);
 };

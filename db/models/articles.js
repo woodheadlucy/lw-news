@@ -21,3 +21,9 @@ exports.insertNewArticle = newArticle => connection.insert(newArticle)
 
 
 exports.modifyVote = (article_id, votes) => connection('articles').where({ article_id }).increment('votes', votes).returning('*');
+
+
+exports.removeArticle = chosenArticleDelete => connection('articles').where(chosenArticleDelete).del();
+
+
+exports.fetchComments = chosenArticle => connection.select('*').from('comments').where({ 'article_id ': chosenArticle });
