@@ -158,6 +158,13 @@ describe('/api', () => {
         expect(res.body.article).to.be.an('object');
         expect(res.body.article).to.contains.keys('article_id', 'author', 'title', 'votes', 'body', 'comment_count', 'created_at', 'topic');
       }));
+      it('PATCH status: 200 can increment the votes on an article and respond with updated article', () => {
+        const newVote = 1;
+        return request.patch('/api/articles/1').send({ inc_votes: newVote }).expect(200).then(({ body }) => {
+          console.log(body.article.votes, '<<< votes');
+          expect(body.article.votes).to.equal(1);
+        });
+      });
     });
   });
 

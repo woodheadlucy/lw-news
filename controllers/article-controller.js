@@ -1,5 +1,5 @@
 const {
-  fetchArticles, fetchArticleById, insertNewArticle,
+  fetchArticles, fetchArticleById, insertNewArticle, modifyVote,
 } = require('../db/models/articles');
 
 
@@ -27,4 +27,13 @@ exports.addArticle = (req, res, next) => {
     .then(([article]) => {
       res.status(201).json({ article });
     }).catch(err => next(err));
+};
+
+
+exports.updateVote = (req, res, next) => {
+  const { inc_votes } = req.body;
+  const { article_id } = req.params;
+  modifyVote(article_id, inc_votes).then(([article]) => {
+    res.status(200).send({ article });
+  }).catch(next);
 };
