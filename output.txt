@@ -10,17 +10,20 @@ You are now connected to database "nc_news_test" as user "lucywoodhead".
  public | users                | table | lucywoodhead
 (6 rows)
 
- article_id |                         title                          |    author     | votes |         created_at         | topic | comment_count 
-------------+--------------------------------------------------------+---------------+-------+----------------------------+-------+---------------
-          1 | Living in the shadow of a great man                    | butter_bridge |     0 | 2018-11-15 12:21:54.171+00 | mitch |            13
-          2 | Sony Vaio; or, The Laptop                              | icellusedkars |     0 | 2014-11-16 12:21:54.171+00 | mitch |             0
-          4 | Student SUES Mitch!                                    | rogersop      |     0 | 2006-11-18 12:21:54.171+00 | mitch |             0
-          6 | A                                                      | icellusedkars |     0 | 1998-11-20 12:21:54.171+00 | mitch |             1
-          7 | Z                                                      | icellusedkars |     0 | 1994-11-21 12:21:54.171+00 | mitch |             0
-          8 | Does Mitch predate civilisation?                       | icellusedkars |     0 | 1990-11-22 12:21:54.171+00 | mitch |             0
-          9 | They're not exactly dogs, are they?                    | butter_bridge |     0 | 1986-11-23 12:21:54.171+00 | mitch |             2
-         10 | Seven inspirational thought leaders from Manchester UK | rogersop      |     0 | 1982-11-24 12:21:54.171+00 | mitch |             0
-         11 | Am I a cat?                                            | icellusedkars |     0 | 1978-11-25 12:21:54.171+00 | mitch |             0
-         12 | Moustache                                              | butter_bridge |     0 | 1974-11-26 12:21:54.171+00 | mitch |             0
-(10 rows)
+ comment_id |                                                                                         body                                                                                         |         created_at         | votes 
+------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------+-------
+          2 | The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.                                                   | 2016-11-22 12:36:03.389+00 |    14
+          3 | Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works. | 2015-11-23 12:36:03.389+00 |   100
+          4 |  I carry a log — yes. Is it funny to you? It is not to me.                                                                                                                           | 2014-11-23 12:36:03.389+00 |  -100
+          5 | I hate streaming noses                                                                                                                                                               | 2013-11-23 12:36:03.389+00 |     0
+          6 | I hate streaming eyes even more                                                                                                                                                      | 2012-11-23 12:36:03.389+00 |     0
+          7 | Lobster pot                                                                                                                                                                          | 2011-11-24 12:36:03.389+00 |     0
+          8 | Delicious crackerbreads                                                                                                                                                              | 2010-11-24 12:36:03.389+00 |     0
+          9 | Superficially charming                                                                                                                                                               | 2009-11-24 12:36:03.389+00 |     0
+         10 | git push origin master                                                                                                                                                               | 2008-11-24 12:36:03.389+00 |     0
+         11 | Ambidextrous marsupial                                                                                                                                                               | 2007-11-25 12:36:03.389+00 |     0
+         12 | Massive intercranial brain haemorrhage                                                                                                                                               | 2006-11-25 12:36:03.389+00 |     0
+         13 | Fruit pastilles                                                                                                                                                                      | 2005-11-25 12:36:03.389+00 |     0
+         18 | This morning, I showered for nine minutes.                                                                                                                                           | 2000-11-26 12:36:03.389+00 |    16
+(13 rows)
 

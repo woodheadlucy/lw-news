@@ -20,6 +20,14 @@ describe('/api', () => {
   after(() => connection.destroy());
 
   // api/topics
+  // describe('/*', () => {
+  //   it('GET status:404 responds with page not found', () => request
+  //     .get('/api/*')
+  //     .expect(404)
+  //     .then(({ body }) => {
+  //       expect(body).to.be.an('object');
+  //       expect(body.message).to.equal('page not found');
+  //     }));
   describe('/topics', () => {
     it('GET status: 200 responds with array of topic objects', () => request.get('/api/topics').expect(200).then((res) => {
       // console.log(res);
@@ -136,7 +144,7 @@ describe('/api', () => {
     }));
 
     // PAGINATION ARTICLES
-    it('GET status: 200 will specify the page which to start at with 10 articles (DEFAULT CASE)', () => request.get('/api/articles?p=2').expect(200).then(({ body }) => {
+    it('GET status: 200 will specify the page which to start at with 10 articles (DEFAULT CASE)', () => request.get('/api/articles?p=1').expect(200).then(({ body }) => {
       // console.log(body.articles, 'pagination');
       expect(body.articles).to.have.length(10);
     }));
@@ -188,16 +196,62 @@ describe('/api', () => {
 
     describe('/api/articles/:article_id/comments', () => {
       it('GET status: 200 and returns the comments associated with the chosen article', () => request.get('/api/articles/9/comments').expect(200).then(({ body }) => {
-        console.log(body.comments[0], '<<< test');
+        // console.log(body.comments[0], '<<< test');
         expect(body.comments).to.be.an('array');
         expect(body.comments[0]).to.contains.keys('comment_id', 'votes', 'created_at', 'username', 'body');
       }));
 
       // LIMITS ON COMMENTS
-      it('GET status: 200  ');
+      it('GET status: 200 will limit to 10 comments (DEFAULT CASE)', () => request.get('/api/articles/1/comments').expect(200).then(({ body }) => {
+        expect(body.comments).to.have.length(10);
+      }));
+      it('GET status: 200 takes a limit query to change the number of comments', () => request.get('/api/articles/1/comments?limit=4').expect(200).then(({ body }) => {
+        expect(body.comments).to.have.length(4);
+      }));
+
+      // SORT COMMENTS BY
+      it('GET comments status: 200 will sort the comments by the date they were submitted (DEFAULT CASE)', () => request.get('/api/articles/1/comments').expect(200).then(({ body }) => {
+        // console.log(body.comments[0].created_at);
+        expect(body.comments[0].created_at).to.equal('2016-11-22T12:36:03.389Z');
+      }));
+      it('GET comments status: 200 can change the sort by on the comments of the article', () => request.get('/api/articles/1/comments?sort_by=votes').expect(200).then(({ body }) => {
+        expect(body.comments[0].votes).to.equal(100);
+      }));
+
+      // PAGINATION COMMENTS
+      it('GET status: 200 will specify the page which to start at with 10 comments (DEFAULT CASE)', () => request.get('/api/articles/1/comments').expect(200).then(({ body }) => {
+        expect(body.comments).to.have.length(10);
+      }));
+      it('GET status: 200 will specify the page which to start at with 10 comments', () => request.get('/api/articles/1/comments?p=2').expect(200).then(({ body }) => {
+        expect(body.comments).to.have.length(10);
+      }));
+      it('GET status: 200 will specify the page which contains the limited number of comments starts at', () => request.get('/api/articles/1/comments?p=2&limit=8').expect(200).then(({ body }) => {
+        expect(body.comments).to.have.length(8);
+        // expect(body.comments[0].body).to.equal()
+      }));
+
+      // SORT COMMENTS
+      it('GET status: 200 and sorts the column by the order specified (DEFAULT DESC)', () => request.get('/api/articles/1/comments?sort_by=comment_id&order=asc').expect(200).then(({ body }) => {
+        ..console.log(body.comments);
+        expect(body.comments[0].comment_id).to.equal(18);
+      }));
+
+      // POST COMMENTS
+
+      // STARTED POST BUT NEED TO COMPLETE ROUTER, MODEL, AND CONTROLLER
+      xit('POST status: 201 adds a new comments to an article', () => {
+        const newComment = {
+          username: 'icellusedkars',
+          body: 'this article changed my life xoxo',
+        };
+        return request.post('/api/articles/1/comments').expect(201).then((res) => {
+          expect(res.body.comments).to.equal();
+        });
+      });
     });
   });
 });
+
 // ////// USERS
 // xdescribe('/users', () => {
 //   it('GET status: 200 with an array of user objects', () => request.get('/api/users').expect(200).then((res) => {
