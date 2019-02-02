@@ -26,8 +26,8 @@ exports.modifyVote = (article_id, inc_votes) => connection('articles').where({ a
 exports.removeArticle = chosenArticleDelete => connection('articles').where(chosenArticleDelete).del();
 
 
-exports.fetchComments = (chosenArticle, defaultLimit = 10, defaultSort = 'created_at', defaultOrder = 'DESC', defaultPage = 1) => connection.select('*').from('comments').where({ 'article_id ': chosenArticle })
+exports.fetchComments = (article_id, limit = 10, sort_by = 'created_at', order = 'DESC', p = 1) => connection.select('*').from('comments').where({ article_id })
 
-  .offset((defaultPage - 1) * defaultLimit)
-  .orderBy(defaultSort, defaultOrder)
-  .limit(defaultLimit);
+  .offset((p - 1) * limit)
+  .orderBy(sort_by, order)
+  .limit(limit);

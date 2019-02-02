@@ -22,9 +22,9 @@ exports.insertNewUser = (req, res, next) => {
 
 
 exports.getUserbyUsername = (req, res, next) => {
-  const oneUsername = req.params.username;
+  const { username } = req.params;
 
-  returnUserbyUsername(oneUsername).then(([user]) => {
+  returnUserbyUsername(username).then(([user]) => {
     res.status(200).json({ user });
   }).catch(next);
 };
@@ -32,6 +32,7 @@ exports.getUserbyUsername = (req, res, next) => {
 
 exports.getArticlesbyUsername = (req, res, next) => {
   const { username } = req.params;
+  console.log(username, '<<<cont');
   returnArticlesbyUsername(username).then((articles) => {
     res.status(200).send({ articles });
   }).catch(next);

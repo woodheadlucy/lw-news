@@ -51,13 +51,13 @@ exports.deleteArticle = (req, res, next) => {
 
 
 exports.getComments = (req, res, next) => {
-  const chosenArticle = req.params.article_id;
-  const chosenLimit = req.query.limit;
-  const chosenSort = req.query.sort_by;
-  const chosenPage = req.query.p;
-  const chosenOrder = req.query.order;
+  const { article_id } = req.params;
+  const {
+    limit, sort_by, p, order,
+  } = req.query;
 
-  fetchComments(chosenArticle, chosenLimit, chosenSort, chosenPage, chosenOrder).then((comments) => {
+
+  fetchComments(article_id, limit, sort_by, p, order).then((comments) => {
     res.status(200).send({ comments });
   }).catch(next);
 };

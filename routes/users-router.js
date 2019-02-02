@@ -8,7 +8,7 @@ router.route('/').get(getUsers).post(insertNewUser);
 
 router.route('/:username').get(getUserbyUsername);
 
-router.route('/:usernames/articles').get(getArticlesbyUsername);
+router.route('/:username/articles').get(getArticlesbyUsername);
 
 // router.post(insertNewUser);
 
