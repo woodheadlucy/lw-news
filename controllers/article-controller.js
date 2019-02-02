@@ -3,6 +3,8 @@ const {
 } = require('../db/models/articles');
 
 
+const { insertNewComment, modifyCommentVote, removeComment } = require('../db/models/comments');
+
 exports.getArticles = (req, res, next) => {
   const chosenLimit = req.query.limit;
   fetchArticles(chosenLimit).then((articles) => {
@@ -41,7 +43,7 @@ exports.updateVote = (req, res, next) => {
 
 exports.deleteArticle = (req, res, next) => {
   const chosenArticleDelete = req.params;
-  // console.log(chosenArticleDelete, '<<<<< deleeete');
+
   removeArticle(chosenArticleDelete).then(() => {
     res.status(204).send();
   }).catch(next);
@@ -54,8 +56,38 @@ exports.getComments = (req, res, next) => {
   const chosenSort = req.query.sort_by;
   const chosenPage = req.query.p;
   const chosenOrder = req.query.order;
-  console.log(chosenArticle, '<<<<<<<< control');
+
   fetchComments(chosenArticle, chosenLimit, chosenSort, chosenPage, chosenOrder).then((comments) => {
     res.status(200).send({ comments });
+  }).catch(next);
+};
+
+
+exports.addComment = (req, res, next) => {
+  const newComment = req.body;
+
+  insertNewComment(newComment).then(([comment]) => {
+    res.status(201).json({ comment });
+  }).catch(next);
+};
+
+
+exports.updateCommentVote = (req, res, next) => {
+  const { inc_votes } = req.body;
+  const { article_id, comment_id } = req.params;
+  console.log(req.params, '<<<<column');
+
+
+  modifyCommentVote(inc_votes, article_id, comment_id).then(([comment]) => {
+    res.status(200).send(({ comment }));
+  }).catch(next);
+};
+
+exports.deleteComment = (req, res, next) => {
+  const { inc_votes } = req.body;
+  const { article_id, comment_id } = req.params;
+
+  removeComment(inc_votes, article_id, comment_id), then(() => {
+    res.status(204).send();
   }).catch(next);
 };

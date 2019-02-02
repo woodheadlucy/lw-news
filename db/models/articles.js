@@ -20,7 +20,7 @@ exports.insertNewArticle = newArticle => connection.insert(newArticle)
   .into('articles').returning('*');
 
 
-exports.modifyVote = (article_id, votes) => connection('articles').where({ article_id }).increment('votes', votes).returning('*');
+exports.modifyVote = (article_id, inc_votes) => connection('articles').where({ article_id }).increment('votes', inc_votes).returning('*');
 
 
 exports.removeArticle = chosenArticleDelete => connection('articles').where(chosenArticleDelete).del();

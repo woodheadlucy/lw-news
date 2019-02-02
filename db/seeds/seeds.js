@@ -7,7 +7,7 @@ const {
 
 const {
   articleRef, formatArticles, formatComments,
-} = require('../data/utils/utils');
+} = require('../utils/utils');
 
 
 exports.seed = (connection, Promise) => connection.migrate

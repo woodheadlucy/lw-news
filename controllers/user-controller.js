@@ -2,7 +2,7 @@
 // USERS CONTROLLER!!
 
 const {
-  fetchUsers, insertNewUser,
+  fetchUsers, addUser, returnUserbyUsername, returnArticlesbyUsername,
 } = require('../db/models/users');
 
 exports.getUsers = (req, res, next) => {
@@ -12,10 +12,27 @@ exports.getUsers = (req, res, next) => {
   }).catch(next);
 };
 
-exports.addUser = (req, res, next) => {
+exports.insertNewUser = (req, res, next) => {
   const newUser = req.body;
-  insertNewUser(newUser.then(([user]) => {
+
+  addUser(newUser).then(([user]) => {
     res.status(201).json({ user });
-  }).catch(next));
-}
-;
+  }).catch(next);
+};
+
+
+exports.getUserbyUsername = (req, res, next) => {
+  const oneUsername = req.params.username;
+
+  returnUserbyUsername(oneUsername).then(([user]) => {
+    res.status(200).json({ user });
+  }).catch(next);
+};
+
+
+exports.getArticlesbyUsername = (req, res, next) => {
+  const { username } = req.params;
+  returnArticlesbyUsername(username).then((articles) => {
+    res.status(200).send({ articles });
+  }).catch(next);
+};

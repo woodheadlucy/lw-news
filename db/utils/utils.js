@@ -1,14 +1,13 @@
 exports.formatArticles = (article) => {
   const formattedArticles = article.map(({
-    created_by, created_at, title, topic, body,
+    created_by, created_at, title, topic, body, votes,
   }) => ({
     author: created_by,
     created_at: new Date(created_at),
     title,
     topic,
     body,
-
-
+    votes,
   }));
   return formattedArticles;
 };
