@@ -293,10 +293,57 @@ describe('/api', () => {
 
     // GET API USERS USERNAME ARTICLES
 
-    describe.only('/users/:username/articles', () => {
+    describe('/users/:username/articles', () => {
       it('GET status: 200 returns an array of article objects by the given user', () => request.get('/api/users/icellusedkars/articles').expect(200).then(({ body }) => {
+        // console.log(body.articles);
         expect(body.articles).to.be.an('array');
         expect(body.articles[0]).to.contains.keys('author', 'title', 'article_id', 'votes', 'comment_count', 'created_at', 'topic');
+      }));
+      // LIMIT ON ARTICLES BY USER
+      it('GET status: 200 returns a limited number of articles belonging to a user (DEFUALT CASE)', () => request.get('/api/users/icellusedkars/articles').expect(200).then(({ body }) => {
+        expect(body.articles).to.have.length(6);
+      }));
+      it('GET status: 200 accepts a query to return a limited number of articles of a user', () => request.get('/api/users/icellusedkars/articles?limit=2').expect(200).then(({ body }) => {
+        expect(body.articles).to.have.length(2);
+      }));
+
+      // SORT BY CREATED
+
+      it('GET comments status: 200 will sort the articles by the date created (DEFAULT CASE)', () => request.get('/api/users/icellusedkars/articles').expect(200).then(({ body }) => {
+        expect(body.articles[0].created_at).to.equal('2014-11-16T12:21:54.171Z');
+      }));
+      it('GET comments status: 200 can change the sort on articles by votes', () => request.get('/api/users/icellusedkars/articles?sort_by=votes').expect(200).then(({ body }) => {
+        expect(body.articles[0].article_id).to.equal(2);
+      }));
+      // PAGINATION
+      it('GET status: 200 will specify the page which to start at with 10 articles (DEFAULT CASE)', () => request.get('/api/users/butter_bridge/articles').expect(200).then(({ body }) => {
+        console.log(body.articles);
+        expect(body.articles).to.have.length(3);
+      }));
+      it('GET status: 200 will specify the page which contains the limited number of comments starts at', () => request.get('/api/users/butter_bridge/articles?p=1&limit=1').expect(200).then(({ body }) => {
+        expect(body.articles).to.have.length(1);
+      }));
+
+      // SORT article
+      it('GET status: 200 and sorts the column by the order specified (DEFAULT DESC)', () => request.get('/api/users/butter_bridge/articles?sort_by=title').expect(200).then(({ body }) => {
+        expect(body.articles[0].title).to.equal('They\'re not exactly dogs, are they?');
+      }));
+      it('GET status: 200 and sorts the column by the order specified', () => request.get('/api/users/butter_bridge/articles?sort_by=title&order=asc').expect(200).then(({ body }) => {
+        expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
+      }));
+    });
+
+    describe('/api', () => {
+      it('GET a json of all the endpoints', () => request.get('/api').expect(200).then(({ body }) => {
+        expect(body.apiObj).to.have.all.keys('/api/topics',
+          '/api/topics/:topic/articles',
+          '/api/articles',
+          '/api/articles/:article_id',
+          '/api/articles/:article_id/comments',
+          '/api/articles/:article_id/comments/:comment_id',
+          '/api/users',
+          '/api/users/:username',
+          '/api/users/:username/articles');
       }));
     });
   });

@@ -12,4 +12,6 @@
 --SELECT comments.comment_id, comments.body, comments.created_at, comments.votes FROM comments JOIN articles ON comments.article_id = articles.article_id WHERE articles.article_id = 1  ORDER BY comments.created_at DESC, comments.votes ASC LIMIT 16;
 
 
-SELECT * FROM articles JOIN comments ON articles.article_id = comments.article_id WHERE comments.username = 'icellusedkars';
+--SELECT * FROM articles JOIN comments ON articles.article_id = comments.article_id WHERE comments.username = 'icellusedkars';
+
+SELECT * FROM articles WHERE articles.author = 'icellusedkars' ORDER BY articles.created_at;

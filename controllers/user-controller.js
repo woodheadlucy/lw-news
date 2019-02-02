@@ -32,8 +32,11 @@ exports.getUserbyUsername = (req, res, next) => {
 
 exports.getArticlesbyUsername = (req, res, next) => {
   const { username } = req.params;
-  console.log(username, '<<<cont');
-  returnArticlesbyUsername(username).then((articles) => {
+  const {
+    limit, sort_by, p, order,
+  } = req.query;
+  // console.log(username, '<<<cont');
+  returnArticlesbyUsername(username, limit, sort_by, p, order).then((articles) => {
     res.status(200).send({ articles });
   }).catch(next);
 };
