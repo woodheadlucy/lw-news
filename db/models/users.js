@@ -3,6 +3,9 @@
 
 const connection = require('../connection');
 
+exports.countArticlesbyUser = ({ username }) => connection.select('username').count({ total_count: 'username' }).from('articles').leftJoin('users', 'users.username', '=', 'articles.author')
+  .groupBy('username')
+  .where('articles.author', '=', username);
 
 exports.fetchUsers = () => connection.select('*').from('users').returning('*');
 exports.addUser = newUser => connection.insert(newUser).into('users').returning('*');

@@ -5,6 +5,7 @@ const {
   modifyVote,
   removeArticle,
   fetchComments,
+  countArticles,
 } = require('../db/models/articles');
 
 const {
@@ -15,14 +16,10 @@ const {
 
 exports.getArticles = (req, res, next) => {
   const chosenLimit = req.query.limit;
-  fetchArticles(chosenLimit)
-    .then((articles) => {
-      if (!articles) {
-        return Promise.reject({ status: 404, message: 'topic not found' });
-      }
-      res.status(200).send({ articles });
-    })
-    .catch(next);
+  fetchArticles(chosenLimit).then(articles => Promise.all([countArticles(), articles])).then(([total_count, articles]) => {
+    if (total_count.length === 0) return Promise.reject({ status: 404, message: 'article not found' });
+    return res.status(200).send({ total_count, articles });
+  }).catch(next);
 };
 
 exports.getArticleById = (req, res, next) => {

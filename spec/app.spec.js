@@ -88,6 +88,13 @@ describe('/api', () => {
         );
       }));
 
+    // TOTAL COUNT of ARTICLES BY TOPIC
+
+    it('GET status: 200 returns the total number of articles for a selected topic', () => request.get('/api/topics/mitch/articles').expect(200).then(({ body }) => {
+      expect(body).to.contain.keys('total_count');
+      expect(body.total_count[0].total_count).to.equal('11');
+    }));
+
     it('GET status: 404 if the topic does not exist', () => request.get('/api/topics/!!2ft/articles').expect(404));
     // LIMIT
     it('GET status: 200 will limit to 10 responses (DEFAULT CASE)', () => request
@@ -155,12 +162,16 @@ describe('/api', () => {
           expect(res.body.article.title).to.equal('tomato ketchup');
         });
     });
-
-    // TOTAL COUNT
   });
+  // ALL ARTICLES
 
   describe('/articles', () => {
-    // ALL ARTICLES
+    // TOTAL COUNT OF ALL ARTICLES
+    it('GET status: 200 returns the total number of articles', () => request.get('/api/articles').expect(200).then(({ body }) => {
+      expect(body).to.contain.keys('total_count');
+      expect(body.total_count).to.equal(12);
+    }));
+
 
     it('GET status: 200 with an array of article objects', () => request
       .get('/api/articles')
@@ -491,6 +502,12 @@ describe('/api', () => {
           'topic',
         );
       }));
+
+    // TOTAL COUNT ON ARTICLES BY USER
+    it.only('GET status: 200 returns the total number of articles by user', () => request.get('/api/users/icellusedkars/articles').expect(200).then(({ body }) => {
+      expect(body.total_count[0]).to.contain.keys('total_count');
+      expect(body.total_count[0].total_count).to.equal('6');
+    }));
     // LIMIT ON ARTICLES BY USER
     it('GET status: 200 returns a limited number of articles belonging to a user (DEFUALT CASE)', () => request
       .get('/api/users/icellusedkars/articles')

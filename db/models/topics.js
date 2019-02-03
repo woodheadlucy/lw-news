@@ -37,3 +37,7 @@ exports.fetchArticlesByTopic = (
   .limit(defaultLimit)
   .offset((defaultPage - 1) * defaultLimit)
   .orderBy(defaultSort, defaultOrder);
+
+exports.countArticlesByTopic = ({ topic }) => connection.select('topic').count({ total_count: 'topic' }).from('articles').rightJoin('topics', 'topics.slug', '=', 'articles.topic')
+  .groupBy('topic')
+  .where('articles.topic', '=', topic);
