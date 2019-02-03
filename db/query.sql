@@ -14,4 +14,6 @@
 
 --SELECT * FROM articles JOIN comments ON articles.article_id = comments.article_id WHERE comments.username = 'icellusedkars';
 
-SELECT * FROM articles WHERE articles.author = 'icellusedkars' ORDER BY articles.created_at;
+--SELECT * FROM articles WHERE articles.author = 'icellusedkars' ORDER BY articles.created_at;
+
+SELECT * FROM COMMENTS WHERE comments.article_id = 9 AND comments.comment_id = 1;

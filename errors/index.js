@@ -6,16 +6,18 @@ exports.handle404 = (err, req, res, next) => {
   // check if 404 and if not then pass to next err
 };
 
-
 exports.handle400 = (err, req, res, next) => {
   const { code } = err;
   const errorCodes400 = {
     '22P02': 'invalid input syntax for integer',
+    23503: 'not found',
+    23505: 'name already exists',
+    42703: 'invalid request',
   };
-  if (errorCodes400[code]) res.status(400).send({ message: errorCodes400[code] });
-  else next(err);
+  if (errorCodes400[code] || err.status === 400) {
+    res.status(400).send({ message: errorCodes400[code] });
+  } else next(err);
 };
-
 
 // exports.handle422 = (err, req, res, next) => {
 //   res.status(422).send({});
