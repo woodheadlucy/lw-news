@@ -25,7 +25,7 @@ exports.addTopic = (req, res, next) => {
     .then(([topic]) => {
       res.status(201).json({ topic });
     })
-    .catch(next);
+    .catch(err => console.log(err) || next(err));
 };
 
 exports.getArticlesByTopic = (req, res, next) => {

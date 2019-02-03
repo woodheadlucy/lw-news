@@ -27,19 +27,21 @@ exports.getArticleById = (req, res, next) => {
 
   fetchArticleById(chosenArtID)
     .then(([article]) => {
-      res.status(200).send({ article });
+      if (!article) return Promise.reject({ status: 404, message: 'article not found' });
+      return res.status(200).send({ article });
     })
-    .catch(err => next(err));
+    .catch(next);
 };
 
 exports.addArticle = (req, res, next) => {
-  const newArticle = req.body;
+  const { title, author, body } = req.body;
+  const { topic } = req.params;
 
-  insertNewArticle(newArticle)
+  insertNewArticle(title, author, body, topic)
     .then(([article]) => {
       res.status(201).json({ article });
     })
-    .catch(err => next(err));
+    .catch(next);
 };
 
 exports.updateVote = (req, res, next) => {
@@ -47,7 +49,8 @@ exports.updateVote = (req, res, next) => {
   const { article_id } = req.params;
   modifyVote(article_id, inc_votes)
     .then(([article]) => {
-      res.status(200).send({ article });
+      if (typeof inc_votes !== 'number') return Promise.reject({ status: 400, message: 'invalid input' });
+      return res.status(200).send({ article });
     })
     .catch(next);
 };
@@ -56,8 +59,9 @@ exports.deleteArticle = (req, res, next) => {
   const chosenArticleDelete = req.params;
 
   removeArticle(chosenArticleDelete)
-    .then(() => {
-      res.status(204).send();
+    .then((response) => {
+      if (!response) return Promise.reject({ status: 404, message: 'article not found' });
+      res.status(204).send({ message: 'article deleted' });
     })
     .catch(next);
 };
@@ -76,8 +80,9 @@ exports.getComments = (req, res, next) => {
 };
 
 exports.addComment = (req, res, next) => {
-  const newComment = req.body;
-
+  const { username, body } = req.body;
+  const { article_id } = req.params;
+  const newComment = { username, body, article_id };
   insertNewComment(newComment)
     .then(([comment]) => {
       res.status(201).json({ comment });
@@ -92,6 +97,7 @@ exports.updateCommentVote = (req, res, next) => {
 
   modifyCommentVote(inc_votes, article_id, comment_id)
     .then(([comment]) => {
+      if (typeof inc_votes !== 'number' || !comment) return Promise.reject({ status: 400, message: 'invalid input' });
       res.status(200).send({ comment });
     })
     .catch(next);
@@ -101,8 +107,8 @@ exports.updateCommentVote = (req, res, next) => {
 exports.deleteComment = (req, res, next) => {
   const { article_id, comment_id } = req.params;
 
-  removeComment(article_id, comment_id),
-  then(() => {
-    res.status(204).send();
-  }).catch(next);
+  removeComment(article_id, comment_id)
+    .then(() => {
+      res.status(204).send();
+    }).catch(next);
 };

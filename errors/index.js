@@ -12,7 +12,8 @@ exports.handle400 = (err, req, res, next) => {
     '22P02': 'invalid input syntax for integer',
     23503: 'not found',
     23505: 'name already exists',
-    42703: 'invalid request',
+    42703: 'invalid input',
+    23502: 'invalid input, column does not exist',
   };
   if (errorCodes400[code] || err.status === 400) {
     res.status(400).send({ message: errorCodes400[code] });

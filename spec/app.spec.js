@@ -44,7 +44,7 @@ describe('/api', () => {
         });
     });
 
-    it('POST status: 400 when a bad req has been made ', () => {
+    it('POST status: 400 when a request with a duplicate slug has been made ', () => {
       const dodgyPost = {
         slug: 'mitch',
         description: 'woopadoodle',
@@ -57,17 +57,27 @@ describe('/api', () => {
           expect(body.message).to.eql('name already exists');
         });
     });
-    // it('POST status: 400 if the new topic object is missing a description', () => {
-    //   const testObj = { slug: 'sluggy' };
-    //   return request
-    //     .post('/api/topics')
-    //     .send(testObj)
-    //     .expect(400)
-    //     .then(({ body }) => {
-    //       console.log(body.message);
-    //       expect(body.message).to.eql('ah');
-    //     });
-    // });
+
+    it('POST status: 400 if the request is not in the correct format', () => {
+      const dodgyPost = {
+        slug: 'bbqsauce',
+        condiments: 'ketchup',
+      };
+      return request.post('/api/topics').send(dodgyPost).expect(400).then(({ body }) => {
+        expect(body.message).to.equal('invalid input');
+      });
+    });
+
+    it('POST status: 400 if the new topic object is missing a description', () => {
+      const dodgyPost = { slug: 'sluggy' };
+      return request
+        .post('/api/topics')
+        .send(dodgyPost)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).to.equal('invalid input, column does not exist');
+        });
+    });
   });
   describe('/topics/:topic/articles', () => {
     it('GET status: 200 with the articles for a chosen topic', () => request
@@ -119,6 +129,11 @@ describe('/api', () => {
           '2018-05-30 16:59:13.341+01',
         ));
     });
+    it('GET status: 200 will default to created_at sort when an invalid sort query is made', () => {
+      request.get('/api/topics/mitch/articles?sort_by=ketchup').expect(200).then(({ body }) => {
+        expect(body.articles[0].created_at).to.equal('2018-05-30 16:59:13.341+01');
+      });
+    });
     it('GET status: 200 can change the sort column to title', () => request
       .get('/api/topics/mitch/articles?sort_by=title')
       .expect(200)
@@ -162,6 +177,30 @@ describe('/api', () => {
           expect(res.body.article.title).to.equal('tomato ketchup');
         });
     });
+
+    it('POST status: 400 bad request if the username does not exist in the database', () => {
+      const dodyArticle = {
+        title: 'lucy in the sky',
+        body: 'with diamonds',
+        author: 'woo10000',
+      };
+      return request.post('/api/topics/mitch/articles').send(dodyArticle).expect(400).then(({ body }) => {
+        expect(body.message).to.equal('not found');
+      });
+    });
+
+    xit('POST status: 400 when the article has no author', () => {
+      const dodgyArticle = {
+        title: 'ketchup',
+        body: 'accessorheinz',
+      };
+      return request.post('/api/topics/mitch/aricles').send(dodgyArticle).expect(400).then(({ body }) => {
+        console.log(body, '<<<not getting through');
+        expect(body.message).to.equal('not found');
+      });
+    });
+    it('GET status: 404 when the topic name does not exist in the database', () => request.get('/api/topics/lucyyy/articles').expect(404));
+    xit('POST status: 404 when trying to post a new article to a non-existent topic', () => request.post('/api/topics/lucywoo/articles').send({ title: 'omg', body: 'coding all day', author: 'icellusedkars' }).expect(404));
   });
   // ALL ARTICLES
 
@@ -217,7 +256,8 @@ describe('/api', () => {
           );
         });
     });
-    it('GET articles status: 200 can change the sort column to title', () => request
+
+    it('GET status: 200 can change the sort column to title', () => request
       .get('/api/articles?sort_by=title')
       .expect(200)
       .then(({ body }) => {
@@ -267,6 +307,10 @@ describe('/api', () => {
           'topic',
         );
       }));
+    it('GET status: 404 when an invalid article id is entered', () => request.get('/api/articles/10000007').expect(404));
+    it('GET status: 400 when a non-number is entered as an id', () => {
+      request.get('/api/articles/lucyfromleeds').expect(400);
+    });
     it('PATCH status: 200 can increment the votes on an article and respond with updated article', () => {
       // NEED TO SORT
 
@@ -299,9 +343,14 @@ describe('/api', () => {
           expect(body.article.votes).to.equal(98);
         });
     });
+    it('PATCH status: 400 if given invalid input for incrementing votes', () => {
+      const newVote = 'burger';
+      return request.patch('/api/articles/1').send({ inc_votes: newVote }).expect(400);
+    });
     // DELETE AN ARTICLE BY ID
 
     it('DELETE status: 204 removes an article by id', () => request.delete('/api/articles/3').expect(204));
+    it('DELETE status: 404 when an attempt to delete a non-existent article id is made', () => request.delete('/api/articles/6500').expect(404));
   });
 
   describe('/articles/:article_id/comments', () => {
@@ -310,6 +359,7 @@ describe('/api', () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.comments).to.be.an('array');
+
         expect(body.comments[0]).to.contains.keys(
           'comment_id',
           'votes',
@@ -409,7 +459,7 @@ describe('/api', () => {
           expect(body.comment.votes).to.equal(46);
         });
     });
-    it('PATCH status 200 returns the article comment with the vote unchanged', () => {
+    it('PATCH status: 200 returns the article comment with the vote unchanged', () => {
       const newVote = 0;
       return request
         .patch('/api/articles/1/comments/18')
@@ -419,7 +469,7 @@ describe('/api', () => {
           expect(body.comment.votes).to.equal(16);
         });
     });
-    it('PATCH status 200 downvotes an article comment', () => {
+    it('PATCH status: 200 downvotes an article comment', () => {
       const newVote = -4;
       return request
         .patch('/api/articles/1/comments/18')
@@ -428,6 +478,20 @@ describe('/api', () => {
         .then(({ body }) => {
           expect(body.comment.votes).to.equal(12);
         });
+    });
+
+
+    it('PATCH status: 400 if given invalid vote input', () => {
+      const newVote = 'hotdogs';
+      return request.patch('/api/articles/1/comments/18').send({ inc_votes: newVote }).expect(400);
+    });
+    it('PATCH status: 400 if an attempt to vote on an invalid article is made', () => {
+      const newVote = 30;
+      return request.patch('/api/articles/88989/comments/1').send({ inc_votes: newVote }).expect(400);
+    });
+    it('PATCH status: 400 when an invalid comment id is passed', () => {
+      const newVote = 30;
+      return request.patch('/api/articles/1/comments/509').send({ inc_votes: newVote }).expect(400);
     });
 
     // DELETE A COMMENT BY ID
@@ -490,7 +554,6 @@ describe('/api', () => {
       .get('/api/users/icellusedkars/articles')
       .expect(200)
       .then(({ body }) => {
-        // console.log(body.articles);
         expect(body.articles).to.be.an('array');
         expect(body.articles[0]).to.contains.keys(
           'author',
@@ -504,7 +567,7 @@ describe('/api', () => {
       }));
 
     // TOTAL COUNT ON ARTICLES BY USER
-    it.only('GET status: 200 returns the total number of articles by user', () => request.get('/api/users/icellusedkars/articles').expect(200).then(({ body }) => {
+    it('GET status: 200 returns the total number of articles by user', () => request.get('/api/users/icellusedkars/articles').expect(200).then(({ body }) => {
       expect(body.total_count[0]).to.contain.keys('total_count');
       expect(body.total_count[0].total_count).to.equal('6');
     }));
@@ -524,7 +587,7 @@ describe('/api', () => {
 
     // SORT BY CREATED
 
-    it('GET comments status: 200 will sort the articles by the date created (DEFAULT CASE)', () => request
+    it('GET status: 200 will sort the articles by the date created (DEFAULT CASE)', () => request
       .get('/api/users/icellusedkars/articles')
       .expect(200)
       .then(({ body }) => {
@@ -532,7 +595,7 @@ describe('/api', () => {
           '2014-11-16T12:21:54.171Z',
         );
       }));
-    it('GET comments status: 200 can change the sort on articles by votes', () => request
+    it('GET status: 200 can change the sort on articles by votes', () => request
       .get('/api/users/icellusedkars/articles?sort_by=votes')
       .expect(200)
       .then(({ body }) => {

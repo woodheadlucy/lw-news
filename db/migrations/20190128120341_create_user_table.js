@@ -1,5 +1,4 @@
 exports.up = function (connection, Promise) {
-  // console.log('creating users table');
   return connection.schema.createTable('users', (userTable) => {
     userTable
       .string('username').primary()

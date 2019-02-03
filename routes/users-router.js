@@ -10,7 +10,5 @@ router.route('/:username').get(getUserbyUsername);
 
 router.route('/:username/articles').get(getArticlesbyUsername);
 
-// router.post(insertNewUser);
-
 
 module.exports = router;
