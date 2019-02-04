@@ -15,11 +15,20 @@ const {
 } = require('../db/models/comments');
 
 exports.getArticles = (req, res, next) => {
-  const chosenLimit = req.query.limit;
-  fetchArticles(chosenLimit).then(articles => Promise.all([countArticles(), articles])).then(([total_count, articles]) => {
-    if (total_count.length === 0) return Promise.reject({ status: 404, message: 'article not found' });
-    return res.status(200).send({ total_count, articles });
-  }).catch(next);
+  const {
+    limit, sort_by, p, order,
+  } = req.query;
+
+  fetchArticles(limit, sort_by, p, order)
+    .then(articles => Promise.all([countArticles(), articles]))
+    .then(([total_count, articles]) => {
+      if (total_count.length === 0) {
+        return Promise.reject({ status: 404, message: 'article not found' });
+      }
+
+      return res.status(200).send({ total_count, articles });
+    })
+    .catch(next);
 };
 
 exports.getArticleById = (req, res, next) => {
@@ -27,7 +36,9 @@ exports.getArticleById = (req, res, next) => {
 
   fetchArticleById(chosenArtID)
     .then(([article]) => {
-      if (!article) return Promise.reject({ status: 404, message: 'article not found' });
+      if (!article) {
+        return Promise.reject({ status: 404, message: 'article not found' });
+      }
       return res.status(200).send({ article });
     })
     .catch(next);
@@ -39,7 +50,11 @@ exports.addArticle = (req, res, next) => {
 
   insertNewArticle(title, author, body, topic)
     .then(([article]) => {
-      res.status(201).json({ article });
+      const validTopics = ['mitch', 'cats'];
+      if (validTopics.includes(topic)) {
+        return res.status(201).json({ article });
+      }
+      return Promise.reject({ status: 400, message: 'invalid topic' });
     })
     .catch(next);
 };
@@ -49,7 +64,9 @@ exports.updateVote = (req, res, next) => {
   const { article_id } = req.params;
   modifyVote(article_id, inc_votes)
     .then(([article]) => {
-      if (typeof inc_votes !== 'number') return Promise.reject({ status: 400, message: 'invalid input' });
+      if (typeof inc_votes !== 'number') {
+        return Promise.reject({ status: 400, message: 'invalid input' });
+      }
       return res.status(200).send({ article });
     })
     .catch(next);
@@ -60,7 +77,9 @@ exports.deleteArticle = (req, res, next) => {
 
   removeArticle(chosenArticleDelete)
     .then((response) => {
-      if (!response) return Promise.reject({ status: 404, message: 'article not found' });
+      if (!response) {
+        return Promise.reject({ status: 404, message: 'article not found' });
+      }
       res.status(204).send({ message: 'article deleted' });
     })
     .catch(next);
@@ -94,15 +113,15 @@ exports.updateCommentVote = (req, res, next) => {
   const { inc_votes } = req.body;
   const { article_id, comment_id } = req.params;
 
-
   modifyCommentVote(inc_votes, article_id, comment_id)
     .then(([comment]) => {
-      if (typeof inc_votes !== 'number' || !comment) return Promise.reject({ status: 400, message: 'invalid input' });
+      if (typeof inc_votes !== 'number' || !comment) {
+        return Promise.reject({ status: 400, message: 'invalid input' });
+      }
       res.status(200).send({ comment });
     })
     .catch(next);
 };
-
 
 exports.deleteComment = (req, res, next) => {
   const { article_id, comment_id } = req.params;
@@ -110,5 +129,6 @@ exports.deleteComment = (req, res, next) => {
   removeComment(article_id, comment_id)
     .then(() => {
       res.status(204).send();
-    }).catch(next);
+    })
+    .catch(next);
 };

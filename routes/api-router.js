@@ -1,5 +1,3 @@
-
-
 const apiRouter = require('express').Router();
 const topicsRouter = require('./topics-router');
 const articlesRouter = require('./articles-router');
@@ -13,6 +11,5 @@ apiRouter.use('/users', usersRouter);
 apiRouter.use('/', (req, res, next) => {
   res.status(200).send(apiObj);
 });
-
 
 module.exports = apiRouter;

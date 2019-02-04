@@ -16,4 +16,6 @@
 
 --SELECT * FROM articles WHERE articles.author = 'icellusedkars' ORDER BY articles.created_at;
 
-SELECT * FROM COMMENTS WHERE comments.article_id = 9 AND comments.comment_id = 1;
+--SELECT * FROM COMMENTS WHERE comments.article_id = 9 AND comments.comment_id = 1;
+
+SELECT * FROM articles;

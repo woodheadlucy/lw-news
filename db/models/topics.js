@@ -13,11 +13,11 @@ exports.insertNewTopic = newTopic => connection
   .returning('*');
 
 exports.fetchArticlesByTopic = (
-  chosenTopic,
-  defaultLimit = 10,
-  defaultSort = 'created_at',
-  defaultPage = 1,
-  defaultOrder = 'DESC',
+  topic,
+  limit = 10,
+  sort_by = 'created_at',
+  p = 1,
+  order = 'DESC',
 ) => connection
   .select(
     'articles.article_id',
@@ -32,12 +32,16 @@ exports.fetchArticlesByTopic = (
   .leftJoin('comments', 'comments.article_id', '=', 'articles.article_id')
   .from('articles')
   .groupBy('articles.article_id')
-  .where({ topic: chosenTopic })
+  .where({ topic })
   .returning('*')
-  .limit(defaultLimit)
-  .offset((defaultPage - 1) * defaultLimit)
-  .orderBy(defaultSort, defaultOrder);
+  .limit(limit)
+  .offset((p - 1) * limit)
+  .orderBy(sort_by, order);
 
-exports.countArticlesByTopic = ({ topic }) => connection.select('topic').count({ total_count: 'topic' }).from('articles').rightJoin('topics', 'topics.slug', '=', 'articles.topic')
+exports.countArticlesByTopic = ({ topic }) => connection
+  .select('topic')
+  .count({ total_count: 'topic' })
+  .from('articles')
+  .rightJoin('topics', 'topics.slug', '=', 'articles.topic')
   .groupBy('topic')
   .where('articles.topic', '=', topic);
