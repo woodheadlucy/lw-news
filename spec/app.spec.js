@@ -9,14 +9,17 @@ const request = supertest(app);
 const connection = require('../db/connection');
 
 describe('/api', () => {
-  beforeEach(() => connection.migrate
+  beforeEach(() =>
+    connection.migrate
       .rollback()
       .then(() => connection.migrate.latest())
-      .then(() => connection.seed.run()),);
+      .then(() => connection.seed.run())
+  );
   after(() => connection.destroy());
 
   describe('/topics', () => {
-    it('GET status: 200 responds with array of topic objects', () => request
+    it('GET status: 200 responds with array of topic objects', () =>
+      request
         .get('/api/topics')
         .expect(200)
         .then(({ body }) => {
@@ -84,7 +87,8 @@ describe('/api', () => {
     });
   });
   describe('/topics/:topic/articles', () => {
-    it('GET status: 200 with the articles for a chosen topic', () => request
+    it('GET status: 200 with the articles for a chosen topic', () =>
+      request
         .get('/api/topics/mitch/articles')
         .expect(200)
         .then(({ body }) => {
@@ -98,11 +102,12 @@ describe('/api', () => {
             'comment_count',
             'created_at',
             'topic',
-            'body',
+            'body'
           );
         }));
 
-    it('GET status: 200 returns the total number of articles for a selected topic', () => request
+    it('GET status: 200 returns the total number of articles for a selected topic', () =>
+      request
         .get('/api/topics/mitch/articles')
         .expect(200)
         .then(({ body }) => {
@@ -110,15 +115,18 @@ describe('/api', () => {
           expect(body.total_count[0].total_count).to.equal('11');
         }));
 
-    it('GET status: 404 if the topic does not exist', () => request.get('/api/topics/!!2ft/articles').expect(404));
+    it('GET status: 404 if the topic does not exist', () =>
+      request.get('/api/topics/!!2ft/articles').expect(404));
 
-    it('GET status: 200 will limit to 10 responses (DEFAULT CASE)', () => request
+    it('GET status: 200 will limit to 10 responses (DEFAULT CASE)', () =>
+      request
         .get('/api/topics/mitch/articles')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.have.length(10);
         }));
-    it('GET status: 200 takes a limit query to change the number of articles returned', () => request
+    it('GET status: 200 takes a limit query to change the number of articles returned', () =>
+      request
         .get('/api/topics/mitch/articles?limit=5')
         .expect(200)
         .then(({ body }) => {
@@ -129,21 +137,23 @@ describe('/api', () => {
       request
         .get('/api/topics/mitch/articles')
         .expect(200)
-        .then(({ body }) => expect(body.articles[0].created_at).to.equal(
-            '2018-05-30 16:59:13.341+01',
-          ),);
+        .then(({ body }) =>
+          expect(body.articles[0].created_at).to.equal(
+            '2018-05-30 16:59:13.341+01'
+          )
+        );
     });
-    it('GET status: 200 will default to created_at sort when an invalid sort query is made', () => {
+    it('GET status: 200 will default to created_at sort when an invalid sort query is made', () =>
       request
         .get('/api/topics/mitch/articles?sort_by=ketchup')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles[0].created_at).to.equal(
-            '2018-05-30 16:59:13.341+01',
+            '2018-11-15T12:21:54.171Z'
           );
-        });
-    });
-    it('GET status: 200 can change the sort column to title', () => request
+        }));
+    it('GET status: 200 can change the sort column to title', () =>
+      request
         .get('/api/topics/mitch/articles?sort_by=title')
         .expect(200)
         .then(({ body }) => {
@@ -151,20 +161,23 @@ describe('/api', () => {
           expect(body.articles[9].title).to.equal('Am I a cat?');
         }));
 
-    it('GET status: 200 will specify the page which to start at with 10 articles (DEFAULT CASE)', () => request
+    it('GET status: 200 will specify the page which to start at with 10 articles (DEFAULT CASE)', () =>
+      request
         .get('/api/topics/mitch/articles?p=2')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.have.length(1);
         }));
-    it('GET status: 200 will specify the page which contains the limited number of articles', () => request
+    it('GET status: 200 will specify the page which contains the limited number of articles', () =>
+      request
         .get('/api/topics/mitch/articles?p=2&limit=6')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.have.length(5);
         }));
 
-    it('GET status:200 and sorts a column by the order specified', () => request
+    it('GET status:200 and sorts a column by the order specified', () =>
+      request
         .get('/api/topics/mitch/articles?sort_by=article_id&order=asc')
         .expect(200)
         .then(({ body }) => {
@@ -214,15 +227,18 @@ describe('/api', () => {
           expect(body.message).to.equal('invalid input, column does not exist');
         });
     });
-    it('GET status: 404 when the topic name does not exist in the database', () => request.get('/api/topics/lucyyy/articles').expect(404));
-    it('POST status: 404 when trying to post a new article to a non-existent topic', () => request
+    it('GET status: 404 when the topic name does not exist in the database', () =>
+      request.get('/api/topics/lucyyy/articles').expect(404));
+    it('POST status: 404 when trying to post a new article to a non-existent topic', () =>
+      request
         .post('/api/topics/lucywoo1000/articles')
         .send({ title: 'omg', body: 'coding all day', author: 'icellusedkars' })
         .expect(400));
   });
 
   describe('/articles', () => {
-    it('GET status: 200 returns the total number of articles', () => request
+    it('GET status: 200 returns the total number of articles', () =>
+      request
         .get('/api/articles')
         .expect(200)
         .then(({ body }) => {
@@ -230,7 +246,8 @@ describe('/api', () => {
           expect(body.total_count).to.equal(12);
         }));
 
-    it('GET status: 200 with an array of article objects', () => request
+    it('GET status: 200 with an array of article objects', () =>
+      request
         .get('/api/articles')
         .expect(200)
         .then(({ body }) => {
@@ -244,17 +261,19 @@ describe('/api', () => {
             'comment_count',
             'created_at',
             'topic',
-            'body',
+            'body'
           );
         }));
 
-    it('GET status: 200 will limit to 10 responses (DEFAULT CASE)', () => request
+    it('GET status: 200 will limit to 10 responses (DEFAULT CASE)', () =>
+      request
         .get('/api/articles')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.have.length(10);
         }));
-    it('GET status: 200 takes a limit query to change the number of articles returned', () => request
+    it('GET status: 200 takes a limit query to change the number of articles returned', () =>
+      request
         .get('/api/articles?limit=5')
         .expect(200)
         .then(({ body }) => {
@@ -267,32 +286,36 @@ describe('/api', () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.articles[0].created_at).to.equal(
-            '2018-05-30 16:59:13.341+01',
+            '2018-05-30 16:59:13.341+01'
           );
         });
     });
 
-    it('GET status: 200 can change the sort column to title', () => request
+    it('GET status: 200 can change the sort column to title', () =>
+      request
         .get('/api/articles?sort_by=title')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles[0].title).to.equal('Z');
         }));
 
-    it('GET status: 200 will specify the page which to start at with 10 articles (DEFAULT CASE)', () => request
+    it('GET status: 200 will specify the page which to start at with 10 articles (DEFAULT CASE)', () =>
+      request
         .get('/api/articles?p=1')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.have.length(10);
         }));
-    it('GET status: 200 will specify the page which contains the limited number of articles', () => request
+    it('GET status: 200 will specify the page which contains the limited number of articles', () =>
+      request
         .get('/api/articles?p=2&limit=6')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.have.length(6);
         }));
 
-    it('GET status:200 and sorts a column by the order specified', () => request
+    it('GET status:200 and sorts a column by the order specified', () =>
+      request
         .get('/api/articles?sort_by=article_id&order=asc')
         .expect(200)
         .then(({ body }) => {
@@ -301,7 +324,8 @@ describe('/api', () => {
   });
 
   describe('/articles/:article_id', () => {
-    it('GET status: 200 returns an article object', () => request
+    it('GET status: 200 returns an article object', () =>
+      request
         .get('/api/articles/2')
         .expect(200)
         .then(({ body }) => {
@@ -315,10 +339,11 @@ describe('/api', () => {
             'body',
             'comment_count',
             'created_at',
-            'topic',
+            'topic'
           );
         }));
-    it('GET status: 404 when an invalid article id is entered', () => request.get('/api/articles/10000007').expect(404));
+    it('GET status: 404 when an invalid article id is entered', () =>
+      request.get('/api/articles/10000007').expect(404));
     it('GET status: 400 when a non-number is entered as an id', () => {
       request.get('/api/articles/lucyfromleeds').expect(400);
     });
@@ -360,12 +385,15 @@ describe('/api', () => {
         .expect(400);
     });
 
-    it('DELETE status: 204 removes an article by id', () => request.delete('/api/articles/3').expect(204));
-    it('DELETE status: 404 when an attempt to delete a non-existent article id is made', () => request.delete('/api/articles/6500').expect(404));
+    it('DELETE status: 204 removes an article by id', () =>
+      request.delete('/api/articles/3').expect(204));
+    it('DELETE status: 404 when an attempt to delete a non-existent article id is made', () =>
+      request.delete('/api/articles/6500').expect(404));
   });
 
   describe('/articles/:article_id/comments', () => {
-    it('GET status: 200 and returns the comments associated with the chosen article', () => request
+    it('GET status: 200 and returns the comments associated with the chosen article', () =>
+      request
         .get('/api/articles/9/comments')
         .expect(200)
         .then(({ body }) => {
@@ -376,51 +404,58 @@ describe('/api', () => {
             'votes',
             'created_at',
             'username',
-            'body',
+            'body'
           );
         }));
 
-    it('GET status: 200 will limit to 10 comments (DEFAULT CASE)', () => request
+    it('GET status: 200 will limit to 10 comments (DEFAULT CASE)', () =>
+      request
         .get('/api/articles/1/comments')
         .expect(200)
         .then(({ body }) => {
           expect(body.comments).to.have.length(10);
         }));
-    it('GET status: 200 takes a limit query to change the number of comments', () => request
+    it('GET status: 200 takes a limit query to change the number of comments', () =>
+      request
         .get('/api/articles/1/comments?limit=4')
         .expect(200)
         .then(({ body }) => {
           expect(body.comments).to.have.length(4);
         }));
 
-    it('GET status: 200 will sort the comments by the date they were submitted (DEFAULT CASE)', () => request
+    it('GET status: 200 will sort the comments by the date they were submitted (DEFAULT CASE)', () =>
+      request
         .get('/api/articles/1/comments')
         .expect(200)
         .then(({ body }) => {
           expect(body.comments[0].created_at).to.equal(
-            '2016-11-22T12:36:03.389Z',
+            '2016-11-22T12:36:03.389Z'
           );
         }));
-    it('GET status: 200 can change the sort by on the comments of the article', () => request
+    it('GET status: 200 can change the sort by on the comments of the article', () =>
+      request
         .get('/api/articles/1/comments?sort_by=votes')
         .expect(200)
         .then(({ body }) => {
           expect(body.comments[0].votes).to.equal(100);
         }));
 
-    it('GET status: 200 will specify the page which to start at with 10 comments (DEFAULT CASE)', () => request
+    it('GET status: 200 will specify the page which to start at with 10 comments (DEFAULT CASE)', () =>
+      request
         .get('/api/articles/1/comments')
         .expect(200)
         .then(({ body }) => {
           expect(body.comments).to.have.length(10);
         }));
-    it('GET status: 200 will specify the page which to start at with 10 comments', () => request
+    it('GET status: 200 will specify the page which to start at with 10 comments', () =>
+      request
         .get('/api/articles/1/comments?p=2')
         .expect(200)
         .then(({ body }) => {
           expect(body.comments).to.have.length(10);
         }));
-    it('GET status: 200 will specify the page which contains the limited number of comments starts at', () => request
+    it('GET status: 200 will specify the page which contains the limited number of comments starts at', () =>
+      request
         .get('/api/articles/1/comments?p=2&limit=8')
         .expect(200)
         .then(({ body }) => {
@@ -428,7 +463,8 @@ describe('/api', () => {
           // expect(body.comments[0].body).to.equal()
         }));
 
-    it('GET status: 200 and sorts the column by the order specified (DEFAULT DESC)', () => request
+    it('GET status: 200 and sorts the column by the order specified (DEFAULT DESC)', () =>
+      request
         .get('/api/articles/1/comments?sort_by=comment_id&order=asc')
         .expect(200)
         .then(({ body }) => {
@@ -446,7 +482,7 @@ describe('/api', () => {
         .expect(201)
         .then(({ body }) => {
           expect(body.comment.body).to.equal(
-            'this article changed my life xoxo',
+            'this article changed my life xoxo'
           );
         });
     });
@@ -512,7 +548,8 @@ describe('/api', () => {
   });
 
   describe('/users', () => {
-    it('GET status: 200 with an array of user objects', () => request
+    it('GET status: 200 with an array of user objects', () =>
+      request
         .get('/api/users')
         .expect(200)
         .then(({ body }) => {
@@ -522,7 +559,7 @@ describe('/api', () => {
           expect(body.users[0]).to.contains.keys(
             'username',
             'avatar_url',
-            'name',
+            'name'
           );
         }));
     it('POST status: 201 sends a new user object', () => {
@@ -543,18 +580,21 @@ describe('/api', () => {
   });
 
   describe('/users/:username', () => {
-    it('GET status: 200 returns a user object', () => request
+    it('GET status: 200 returns a user object', () =>
+      request
         .get('/api/users/icellusedkars')
         .expect(200)
         .then(({ body }) => {
           expect(body.user.username).to.equal('icellusedkars');
           expect(body.user).to.contains.keys('username', 'avatar_url', 'name');
         }));
-    it('GET status: 404 if a username does not exist in the database', () => request.get('/api/users/lalalalalucy').expect(404));
+    it('GET status: 404 if a username does not exist in the database', () =>
+      request.get('/api/users/lalalalalucy').expect(404));
   });
 
   describe('/users/:username/articles', () => {
-    it('GET status: 200 returns an array of article objects by the given user', () => request
+    it('GET status: 200 returns an array of article objects by the given user', () =>
+      request
         .get('/api/users/icellusedkars/articles')
         .expect(200)
         .then(({ body }) => {
@@ -566,11 +606,12 @@ describe('/api', () => {
             'votes',
             'comment_count',
             'created_at',
-            'topic',
+            'topic'
           );
         }));
 
-    it('GET status: 200 returns the total number of articles by user', () => request
+    it('GET status: 200 returns the total number of articles by user', () =>
+      request
         .get('/api/users/icellusedkars/articles')
         .expect(200)
         .then(({ body }) => {
@@ -578,67 +619,76 @@ describe('/api', () => {
           expect(body.total_count[0].total_count).to.equal('6');
         }));
 
-    it('GET status: 200 returns a limited number of articles belonging to a user (DEFUALT CASE)', () => request
+    it('GET status: 200 returns a limited number of articles belonging to a user (DEFUALT CASE)', () =>
+      request
         .get('/api/users/icellusedkars/articles')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.have.length(6);
         }));
-    it('GET status: 200 accepts a query to return a limited number of articles of a user', () => request
+    it('GET status: 200 accepts a query to return a limited number of articles of a user', () =>
+      request
         .get('/api/users/icellusedkars/articles?limit=2')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.have.length(2);
         }));
 
-    it('GET status: 200 will sort the articles by the date created (DEFAULT CASE)', () => request
+    it('GET status: 200 will sort the articles by the date created (DEFAULT CASE)', () =>
+      request
         .get('/api/users/icellusedkars/articles')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles[0].created_at).to.equal(
-            '2014-11-16T12:21:54.171Z',
+            '2014-11-16T12:21:54.171Z'
           );
         }));
-    it('GET status: 200 can change the sort on articles by votes', () => request
+    it('GET status: 200 can change the sort on articles by votes', () =>
+      request
         .get('/api/users/icellusedkars/articles?sort_by=votes')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles[0].article_id).to.equal(2);
         }));
 
-    it('GET status: 200 will specify the page which to start at with 10 articles (DEFAULT CASE)', () => request
+    it('GET status: 200 will specify the page which to start at with 10 articles (DEFAULT CASE)', () =>
+      request
         .get('/api/users/butter_bridge/articles')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.have.length(3);
         }));
-    it('GET status: 200 will specify the page which contains the limited number of comments starts at', () => request
+    it('GET status: 200 will specify the page which contains the limited number of comments starts at', () =>
+      request
         .get('/api/users/butter_bridge/articles?p=1&limit=1')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.have.length(1);
         }));
 
-    it('GET status: 200 and sorts the column by the order specified (DEFAULT DESC)', () => request
+    it('GET status: 200 and sorts the column by the order specified (DEFAULT DESC)', () =>
+      request
         .get('/api/users/butter_bridge/articles?sort_by=title')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles[0].title).to.equal(
-            "They're not exactly dogs, are they?",
+            "They're not exactly dogs, are they?"
           );
         }));
-    it('GET status: 200 and sorts the column by the order specified', () => request
+    it('GET status: 200 and sorts the column by the order specified', () =>
+      request
         .get('/api/users/butter_bridge/articles?sort_by=title&order=asc')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles[0].title).to.equal(
-            'Living in the shadow of a great man',
+            'Living in the shadow of a great man'
           );
         }));
   });
 
   describe('/api', () => {
-    it('GET a json of all the endpoints', () => request
+    it('GET a json of all the endpoints', () =>
+      request
         .get('/api')
         .expect(200)
         .then(({ body }) => {
@@ -651,7 +701,7 @@ describe('/api', () => {
             '/api/articles/:article_id/comments/:comment_id',
             '/api/users',
             '/api/users/:username',
-            '/api/users/:username/articles',
+            '/api/users/:username/articles'
           );
         }));
   });

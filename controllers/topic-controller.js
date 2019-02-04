@@ -23,16 +23,26 @@ exports.addTopic = (req, res, next) => {
     .then(([topic]) => {
       res.status(201).json({ topic });
     })
-    .catch(err => console.log(err) || next(err));
+    .catch(next);
 };
 
 exports.getArticlesByTopic = (req, res, next) => {
   const { topic } = req.params;
 
-  const {
-    limit, sort_by, p, order,
-  } = req.query;
+  const { limit, p, order } = req.query;
 
+  let { sort_by } = req.query;
+
+  const validSorts = [
+    'title',
+    'article_id',
+    'votes',
+    'author',
+    'created_at',
+    'topic',
+  ];
+
+  if (!validSorts.includes(sort_by)) sort_by = 'created_at';
   fetchArticlesByTopic(topic, limit, sort_by, p, order)
     .then(articles => Promise.all([countArticlesByTopic(req.params), articles]))
     .then(([total_count, articles]) => {

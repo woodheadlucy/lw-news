@@ -15,12 +15,20 @@ const {
 } = require('../db/models/comments');
 
 exports.getArticles = (req, res, next) => {
-  const {
-    limit, sort_by, p, order,
-  } = req.query;
+  const { limit, p, order } = req.query;
+  let { sort_by } = req.query;
+  const validSorts = [
+    'title',
+    'created_at',
+    'votes',
+    'body',
+    'article_id',
+    'author',
+  ];
 
-  fetchArticles(limit, sort_by, p, order)
-    .then(articles => Promise.all([countArticles(), articles]))
+  if (!validSorts.includes(sort_by)) sort_by = 'created_at';
+
+  Promise.all([countArticles(), fetchArticles(limit, sort_by, p, order)])
     .then(([total_count, articles]) => {
       if (total_count.length === 0) {
         return Promise.reject({ status: 404, message: 'article not found' });
@@ -88,8 +96,8 @@ exports.deleteArticle = (req, res, next) => {
 exports.getComments = (req, res, next) => {
   const { article_id } = req.params;
   const {
-    limit, sort_by, p, order,
-  } = req.query;
+ limit, sort_by, p, order 
+} = req.query;
 
   fetchComments(article_id, limit, sort_by, p, order)
     .then((comments) => {
