@@ -43,8 +43,11 @@ exports.getArticlesByTopic = (req, res, next) => {
   ];
 
   if (!validSorts.includes(sort_by)) sort_by = 'created_at';
-  fetchArticlesByTopic(topic, limit, sort_by, p, order)
-    .then(articles => Promise.all([countArticlesByTopic(req.params), articles]))
+
+  Promise.all([
+    countArticlesByTopic(req.params),
+    fetchArticlesByTopic(topic, limit, sort_by, p, order),
+  ])
     .then(([total_count, articles]) => {
       if (total_count.length === 0) {
         return Promise.reject({ status: 404, message: 'article not found' });

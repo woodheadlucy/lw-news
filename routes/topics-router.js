@@ -1,4 +1,7 @@
 const router = require('express').Router();
+
+const { handle405 } = require('../errors/index');
+
 const {
   getTopics,
   addTopic,
@@ -10,11 +13,13 @@ const { addArticle } = require('../controllers/article-controller');
 router
   .route('/')
   .get(getTopics)
-  .post(addTopic);
+  .post(addTopic)
+  .all(handle405);
 
 router
   .route('/:topic/articles')
   .get(getArticlesByTopic)
-  .post(addArticle);
+  .post(addArticle)
+  .all(handle405);
 
 module.exports = router;

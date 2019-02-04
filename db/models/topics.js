@@ -1,5 +1,3 @@
-// TOPIC MODEL!!!!
-
 const connection = require('../connection');
 
 exports.fetchTopics = () => connection

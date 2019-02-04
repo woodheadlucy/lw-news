@@ -57,14 +57,12 @@ exports.addArticle = (req, res, next) => {
   const { topic } = req.params;
 
   insertNewArticle(title, author, body, topic)
-    .then(([article]) => {
-      const validTopics = ['mitch', 'cats'];
-      if (validTopics.includes(topic)) {
-        return res.status(201).json({ article });
-      }
-      return Promise.reject({ status: 400, message: 'invalid topic' });
-    })
-    .catch(next);
+    .then(([article]) => res.status(201).json({ article }))
+    .catch((err) => {
+      if (err.code === '23503') {
+        next({ status: 404, message: 'topic does not exist' });
+      } else next(err);
+    });
 };
 
 exports.updateVote = (req, res, next) => {
@@ -81,14 +79,14 @@ exports.updateVote = (req, res, next) => {
 };
 
 exports.deleteArticle = (req, res, next) => {
-  const chosenArticleDelete = req.params;
+  const chosenArticleDelete = req.params.article_id;
 
   removeArticle(chosenArticleDelete)
     .then((response) => {
       if (!response) {
         return Promise.reject({ status: 404, message: 'article not found' });
       }
-      res.status(204).send({ message: 'article deleted' });
+      return res.status(204).send({ message: 'article deleted' });
     })
     .catch(next);
 };
@@ -96,14 +94,18 @@ exports.deleteArticle = (req, res, next) => {
 exports.getComments = (req, res, next) => {
   const { article_id } = req.params;
   const {
- limit, sort_by, p, order 
-} = req.query;
+    limit, sort_by, p, order,
+  } = req.query;
 
   fetchComments(article_id, limit, sort_by, p, order)
     .then((comments) => {
       res.status(200).send({ comments });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.code === '22003') {
+        next({ status: 404, message: 'invalid article id' });
+      } else next(err);
+    });
 };
 
 exports.addComment = (req, res, next) => {
@@ -134,9 +136,17 @@ exports.updateCommentVote = (req, res, next) => {
 exports.deleteComment = (req, res, next) => {
   const { article_id, comment_id } = req.params;
 
+  console.log(article_id, comment_id, '><<control');
+
   removeComment(article_id, comment_id)
-    .then(() => {
-      res.status(204).send();
+    .then((response) => {
+      if (!response) {
+        return Promise.reject({
+          status: 404,
+          message: 'article does not exist',
+        });
+      }
+      return res.status(204).send();
     })
     .catch(next);
 };
