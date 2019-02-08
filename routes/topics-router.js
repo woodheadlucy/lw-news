@@ -6,9 +6,10 @@ const {
   getTopics,
   addTopic,
   getArticlesByTopic,
+  addArticle,
 } = require('../controllers/topic-controller');
 
-const { addArticle } = require('../controllers/article-controller');
+// const { addArticle } = require('../controllers/article-controller');
 
 router
   .route('/')

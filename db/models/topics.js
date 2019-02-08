@@ -43,3 +43,15 @@ exports.countArticlesByTopic = ({ topic }) => connection
   .rightJoin('topics', 'topics.slug', '=', 'articles.topic')
   .groupBy('topic')
   .where('articles.topic', '=', topic);
+
+
+exports.insertNewArticle = (title, author, body, topic) => connection
+  .insert({
+    title,
+    author,
+    body,
+    topic,
+  })
+  .into('articles')
+  .where({ topic })
+  .returning('*');

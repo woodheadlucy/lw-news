@@ -3,6 +3,7 @@ const {
   insertNewTopic,
   fetchArticlesByTopic,
   countArticlesByTopic,
+  insertNewArticle,
 } = require('../db/models/topics');
 
 exports.getTopics = (req, res, next) => {
@@ -25,6 +26,7 @@ exports.addTopic = (req, res, next) => {
     })
     .catch(next);
 };
+
 
 exports.getArticlesByTopic = (req, res, next) => {
   const { topic } = req.params;
@@ -49,10 +51,24 @@ exports.getArticlesByTopic = (req, res, next) => {
     fetchArticlesByTopic(topic, limit, sort_by, p, order),
   ])
     .then(([total_count, articles]) => {
+      console.log('hello', articles);
       if (total_count.length === 0) {
         return Promise.reject({ status: 404, message: 'article not found' });
       }
       return res.status(200).send({ total_count, articles });
+    })
+    .catch(next);
+};
+
+
+exports.addArticle = (req, res, next) => {
+  const { title, author, body } = req.body;
+  const { topic } = req.params;
+
+  insertNewArticle(title, author, body, topic)
+    .then(([article]) => {
+      console.log(article, '<<<mayhem');
+      res.status(201).json({ article });
     })
     .catch(next);
 };

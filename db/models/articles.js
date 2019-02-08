@@ -29,26 +29,25 @@ exports.fetchArticleById = chosenArtId => connection
   .where({ 'articles.article_id': chosenArtId })
   .returning('*');
 
-exports.insertNewArticle = (title, author, body, topic) => connection
-  .insert({
-    title,
-    author,
-    body,
-    topic,
-  })
-  .into('articles')
-  .where({ topic })
-  .returning('*');
+// exports.insertNewArticle = (title, author, body, topic) => connection
+//   .insert({
+//     title,
+//     author,
+//     body,
+//     topic,
+//   })
+//   .into('articles')
+//   .where({ topic })
+//   .returning('*');
 
 exports.modifyVote = (article_id, inc_votes) => connection('articles')
   .where({ article_id })
   .increment('votes', inc_votes)
   .returning('*');
 
-exports.removeArticle = chosenArticleDelete => console.log(chosenArticleDelete)
-  || connection('articles')
-    .where({ article_id: chosenArticleDelete })
-    .del();
+exports.removeArticle = chosenArticleDelete => connection('articles')
+  .where({ article_id: chosenArticleDelete })
+  .del();
 
 exports.fetchComments = (
   article_id,
@@ -60,7 +59,6 @@ exports.fetchComments = (
   .select('*')
   .from('comments')
   .where({ article_id })
-
+  .limit(limit)
   .offset((p - 1) * limit)
-  .orderBy(sort_by, order)
-  .limit(limit);
+  .orderBy(sort_by, order);

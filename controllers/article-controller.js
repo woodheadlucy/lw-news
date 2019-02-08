@@ -52,18 +52,19 @@ exports.getArticleById = (req, res, next) => {
     .catch(next);
 };
 
-exports.addArticle = (req, res, next) => {
-  const { title, author, body } = req.body;
-  const { topic } = req.params;
+// exports.addArticle = (req, res, next) => {
+//   const { title, author, body } = req.body;
+//   const { topic } = req.params;
 
-  insertNewArticle(title, author, body, topic)
-    .then(([article]) => res.status(201).json({ article }))
-    .catch((err) => {
-      if (err.code === '23503') {
-        next({ status: 404, message: 'topic does not exist' });
-      } else next(err);
-    });
-};
+//   insertNewArticle(title, author, body, topic)
+//     .then(([article]) => res.status(201).json({ article }))
+//     .catch((err) => {
+//       if (err.code === '23503') {
+//         next({ status: 404, message: 'topic does not exist' });
+//       } else next(err);
+//     });
+// };
+
 
 exports.updateVote = (req, res, next) => {
   const { inc_votes } = req.body;
@@ -94,10 +95,15 @@ exports.deleteArticle = (req, res, next) => {
 exports.getComments = (req, res, next) => {
   const { article_id } = req.params;
   const {
-    limit, sort_by, p, order,
+    limit, p, order,
   } = req.query;
 
-  fetchComments(article_id, limit, sort_by, p, order)
+  let { sort_by } = req.query;
+  const validCommentSorts = ['body', 'comment_id', 'username', 'article_id', 'votes', 'created_at'];
+
+  if (!validCommentSorts.includes(sort_by)) sort_by = 'created_at';
+
+  fetchComments(article_id, limit, sort_by, order, p)
     .then((comments) => {
       res.status(200).send({ comments });
     })
@@ -116,12 +122,18 @@ exports.addComment = (req, res, next) => {
     .then(([comment]) => {
       res.status(201).json({ comment });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.code === '22003') {
+        next({ status: 404, message: 'invalid article id' });
+      } else next(err);
+    });
 };
 
 exports.updateCommentVote = (req, res, next) => {
-  const { inc_votes } = req.body;
+  let { inc_votes } = req.body;
   const { article_id, comment_id } = req.params;
+
+  if (inc_votes === undefined) inc_votes = 0;
 
   modifyCommentVote(inc_votes, article_id, comment_id)
     .then(([comment]) => {
@@ -133,20 +145,13 @@ exports.updateCommentVote = (req, res, next) => {
     .catch(next);
 };
 
+
 exports.deleteComment = (req, res, next) => {
   const { article_id, comment_id } = req.params;
-
-  console.log(article_id, comment_id, '><<control');
-
   removeComment(article_id, comment_id)
     .then((response) => {
-      if (!response) {
-        return Promise.reject({
-          status: 404,
-          message: 'article does not exist',
-        });
-      }
-      return res.status(204).send();
+      if (response === 0) next({ status: 404, message: 'sorry not found' });
+      else res.status(204).send();
     })
     .catch(next);
 };

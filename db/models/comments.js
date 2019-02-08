@@ -9,7 +9,7 @@ exports.insertNewComment = newComment => connection
 exports.modifyCommentVote = (inc_votes, article_id, comment_id) => connection('comments').where('comments.comment_id', '=', comment_id).where('comments.article_id', '=', article_id).increment('votes', inc_votes)
   .returning('*');
 
-exports.removeComment = (article_id, comment_id) => connection('articles')
-  .where(article_id)
-  .where(comment_id)
+exports.removeComment = (article_id, comment_id) => connection('comments')
+  .where({ 'comments.article_id': article_id })
+  .where({ 'comments.comment_id': comment_id })
   .del();
