@@ -1,7 +1,7 @@
 const {
   fetchArticles,
   fetchArticleById,
-  insertNewArticle,
+
   modifyVote,
   removeArticle,
   fetchComments,
@@ -27,13 +27,11 @@ exports.getArticles = (req, res, next) => {
   ];
 
   if (!validSorts.includes(sort_by)) sort_by = 'created_at';
-
   Promise.all([countArticles(), fetchArticles(limit, sort_by, p, order)])
     .then(([total_count, articles]) => {
-      if (total_count.length === 0) {
+      if (total_count === 0) {
         return Promise.reject({ status: 404, message: 'article not found' });
       }
-
       return res.status(200).send({ total_count, articles });
     })
     .catch(next);
@@ -52,29 +50,18 @@ exports.getArticleById = (req, res, next) => {
     .catch(next);
 };
 
-// exports.addArticle = (req, res, next) => {
-//   const { title, author, body } = req.body;
-//   const { topic } = req.params;
-
-//   insertNewArticle(title, author, body, topic)
-//     .then(([article]) => res.status(201).json({ article }))
-//     .catch((err) => {
-//       if (err.code === '23503') {
-//         next({ status: 404, message: 'topic does not exist' });
-//       } else next(err);
-//     });
-// };
-
 
 exports.updateVote = (req, res, next) => {
-  const { inc_votes } = req.body;
+  let { inc_votes } = req.body;
   const { article_id } = req.params;
+
+  if (inc_votes === undefined) inc_votes = 0;
   modifyVote(article_id, inc_votes)
     .then(([article]) => {
       if (typeof inc_votes !== 'number') {
         return Promise.reject({ status: 400, message: 'invalid input' });
       }
-      return res.status(200).send({ article });
+      res.status(200).send({ article });
     })
     .catch(next);
 };
@@ -117,16 +104,11 @@ exports.getComments = (req, res, next) => {
 exports.addComment = (req, res, next) => {
   const { username, body } = req.body;
   const { article_id } = req.params;
-  const newComment = { username, body, article_id };
-  insertNewComment(newComment)
+  insertNewComment(username, body, article_id)
     .then(([comment]) => {
-      res.status(201).json({ comment });
+      if (comment.article_id === null) { next({ status: 404, message: 'article does not exist' }); } else res.status(201).json({ comment });
     })
-    .catch((err) => {
-      if (err.code === '22003') {
-        next({ status: 404, message: 'invalid article id' });
-      } else next(err);
-    });
+    .catch(next);
 };
 
 exports.updateCommentVote = (req, res, next) => {
@@ -137,10 +119,7 @@ exports.updateCommentVote = (req, res, next) => {
 
   modifyCommentVote(inc_votes, article_id, comment_id)
     .then(([comment]) => {
-      if (typeof inc_votes !== 'number' || !comment) {
-        return Promise.reject({ status: 400, message: 'invalid input' });
-      }
-      res.status(200).send({ comment });
+      if (typeof inc_votes !== 'number') { next({ status: 400, message: 'invalid input' }); } else if (comment === undefined) { next({ status: 404, message: 'no article id' }); } else res.status(200).send({ comment });
     })
     .catch(next);
 };

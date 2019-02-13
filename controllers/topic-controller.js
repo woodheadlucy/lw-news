@@ -51,8 +51,7 @@ exports.getArticlesByTopic = (req, res, next) => {
     fetchArticlesByTopic(topic, limit, sort_by, p, order),
   ])
     .then(([total_count, articles]) => {
-      console.log('hello', articles);
-      if (total_count.length === 0) {
+      if (total_count.length === 0 || !articles.length) {
         return Promise.reject({ status: 404, message: 'article not found' });
       }
       return res.status(200).send({ total_count, articles });
@@ -67,7 +66,6 @@ exports.addArticle = (req, res, next) => {
 
   insertNewArticle(title, author, body, topic)
     .then(([article]) => {
-      console.log(article, '<<<mayhem');
       res.status(201).json({ article });
     })
     .catch(next);

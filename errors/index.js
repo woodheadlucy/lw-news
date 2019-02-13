@@ -1,5 +1,4 @@
 exports.handle400 = (err, req, res, next) => {
-  console.log(err, '<<<');
   const { code } = err;
   const errorCodes400 = {
     '22P02': 'invalid input syntax for integer',
@@ -8,24 +7,19 @@ exports.handle400 = (err, req, res, next) => {
     42703: 'invalid input',
     23502: 'invalid input, column does not exist',
   };
-  if (
-    (errorCodes400[code] && err.constraint !== 'topics_pkey')
-    || err.status === 400
-  ) {
+  const notFoundContraints = ['comments_article_id_foreign', 'comments_username_foreign', 'articles_topic_foreign'];
+  if ((errorCodes400[code] && !notFoundContraints.includes(err.constraint)) || err.status === 400) {
     res.status(400).send({ message: errorCodes400[code] });
-  } else if (
-    (errorCodes400 === 23503 && err.constraint !== 'comments_username_foreign')
-    || err.status === 400) {
-    res.status(400).send({ message: errorCodes400[code] });
-  } else if (
-    (errorCodes400[code] && err.constraint !== undefined) || err.status === 400) {
-    res.status(400).send({ message: errorCodes400[code] });
-  } else { next(err); }
+  } else next(err);
 };
 
 
 exports.handle404 = (err, req, res, next) => {
-  if (err.status === 404) res.status(404).send({ message: 'page not found' });
+  const { code } = err;
+  const errorCodes404 = {
+    23503: 'not found',
+  };
+  if ((errorCodes404[code] && err.constraint !== undefined) || err.status === 404) res.status(404).send({ message: 'page not found' });
   else next(err);
 };
 
@@ -35,7 +29,6 @@ exports.handle405 = (req, res, next) => {
 
 
 exports.handle422 = (err, req, res, next) => {
-  console.log(err, '<<< 422');
   const { code } = err;
   const errorCodes422 = {
     23505: 'name already exists',

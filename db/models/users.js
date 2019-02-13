@@ -1,12 +1,10 @@
 const connection = require('../connection');
 
 exports.countArticlesbyUser = ({ username }) => connection
-  .select('username')
-  .count({ total_count: 'username' })
-  .from('articles')
-  .leftJoin('users', 'users.username', '=', 'articles.author')
-  .groupBy('username')
-  .where('articles.author', '=', username);
+  .select().from('articles')
+  .where('articles.author', '=', username)
+  .count('articles.article_id')
+  .then(([{ count }]) => +count);
 
 exports.fetchUsers = () => connection
   .select('*')

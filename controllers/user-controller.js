@@ -51,7 +51,7 @@ exports.getArticlesbyUsername = (req, res, next) => {
     returnArticlesbyUsername(username, limit, sort_by, p, order),
   ])
     .then(([total_count, articles]) => {
-      if (total_count.length === 0) {
+      if (total_count === 0) {
         return Promise.reject({ status: 404, message: 'sorry not found' });
       }
       return res.status(200).send({ total_count, articles });

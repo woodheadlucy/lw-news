@@ -37,12 +37,11 @@ exports.fetchArticlesByTopic = (
   .orderBy(sort_by, order);
 
 exports.countArticlesByTopic = ({ topic }) => connection
-  .select('topic')
-  .count({ total_count: 'topic' })
+  .select()
   .from('articles')
-  .rightJoin('topics', 'topics.slug', '=', 'articles.topic')
-  .groupBy('topic')
-  .where('articles.topic', '=', topic);
+  .where({ topic })
+  .count('articles.topic')
+  .then(([{ count }]) => +count);
 
 
 exports.insertNewArticle = (title, author, body, topic) => connection

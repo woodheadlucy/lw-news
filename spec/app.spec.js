@@ -48,7 +48,7 @@ describe('/api', () => {
     it('PUT status: 405 for invalid methods', () => request.put('/api/topics').expect(405));
     it('PATCH status: 405 for invalid methods', () => request.patch('/api/topics').expect(405));
 
-    it('POST status: 422 when a request with a duplicate slug has been made ', () => {
+    it('POST status: 400 when a request with a duplicate slug has been made ', () => {
       const dodgyPost = {
         slug: 'mitch',
         description: 'woopadoodle',
@@ -56,10 +56,7 @@ describe('/api', () => {
       return request
         .post('/api/topics')
         .send(dodgyPost)
-        .expect(422)
-        .then(({ body }) => {
-          expect(body.message).to.eql('name already exists');
-        });
+        .expect(400);
     });
 
     it('POST status: 400 if the request is not in the correct format', () => {
@@ -112,7 +109,7 @@ describe('/api', () => {
       .then(({ body }) => {
         expect(body).to.contain.keys('total_count');
 
-        expect(body.total_count[0].total_count).to.equal('11');
+        expect(body.total_count).to.equal(11);
       }));
 
     it('GET status: 404 if the topic does not exist', () => request.get('/api/topics/!!2ft/articles').expect(404));
@@ -216,7 +213,8 @@ describe('/api', () => {
     });
     it('GET status: 404 when the topic name does not exist in the database', () => request.get('/api/topics/lucyyy/articles').expect(404));
 
-    it.only('POST status: 404 when trying to post a new article to a non-existent topic', () => request
+
+    it('POST status: 404 when trying to post a new article to a non-existent topic', () => request
       .post('/api/topics/lucywoo10/articles')
       .send({ title: 'omg', body: 'coding all day', author: 'icellusedkars' })
       .expect(404));
@@ -340,7 +338,7 @@ describe('/api', () => {
         });
     });
     it('PATCH status 200 returns the article with the vote unchanged', () => {
-      const newVote = 0;
+      let newVote;
       return request
         .patch('/api/articles/1')
         .send({ inc_votes: newVote })
@@ -392,21 +390,23 @@ describe('/api', () => {
       }));
 
     it('GET status: 404 when an attempt to get comments for a non-existent article id is made', () => request.get('/api/articles/32974623947/comments').expect(404));
+
+
     it('POST status: 404 when given a non existent article id', () => {
       const newComment = {
         username: 'icellusedkars',
         body: 'lemon difficult',
       };
 
-      return request.post('/api/articles/2309482309u/comments').send(newComment).expect(404);
+      return request.post('/api/articles/230987/comments').send(newComment).expect(404);
     });
 
-    it('POST status: 422 when an attempt to post with a non-existent author', () => {
+    it('POST status: 404 when an attempt to post with a non-existent author', () => {
       const newComment = {
         username: 'woodhel02',
         body: 'bamboozled',
       };
-      return request.post('/api/articles/1/comments').send(newComment).expect(422);
+      return request.post('/api/articles/1/comments').send(newComment).expect(404);
     });
 
     it('GET status: 200 will limit to 10 comments (DEFAULT CASE)', () => request
@@ -422,7 +422,7 @@ describe('/api', () => {
         expect(body.comments).to.have.length(4);
       }));
 
-    // unsure if this is correct
+
     it('GET status: 200 will sort the comments by the date they were submitted (DEFAULT CASE)', () => request
       .get('/api/articles/1/comments')
       .expect(200)
@@ -437,13 +437,12 @@ describe('/api', () => {
       .then(({ body }) => {
         expect(body.comments[0].votes).to.equal(100);
       }));
-    // it.only('GET status: 200 can change the sort by on the comments of the article', () => {
-    //   request.get('/api/articles/1/comments?sort_by=body').expect(200).then(({ body }) => {
-    //     console.log(body);
-    //     expect(body.comments[0].body).to.equal('haha');
-    //   });
+    it('GET status: 200 can change the sort by on the comments of the article', () => {
+      request.get('/api/articles/1/comments?sort_by=body').expect(200).then(({ body }) => {
+        expect(body.comments[0].body).to.equal('haha');
+      });
+    });
 
-    // does not work :()
     it('GET status: 200 can take a query to sort by username (DEFAULT ORDER DESC)', () => request
       .get('/api/articles/1/comments?sort_by=username')
       .expect(200)
@@ -459,7 +458,6 @@ describe('/api', () => {
       }));
 
 
-    // why is the offset not working
     it('GET status: 200 will specify the page which to start at with a number of comments', () => request
       .get('/api/articles/1/comments?p=2')
       .expect(200)
@@ -470,8 +468,7 @@ describe('/api', () => {
       .get('/api/articles/1/comments?p=2&limit=8')
       .expect(200)
       .then(({ body }) => {
-        expect(body.comments).to.have.length(8);
-        // expect(body.comments[0].body).to.equal()
+        expect(body.comments).to.have.length(5);
       }));
 
     it('GET status: 200 and sorts the column by the order specified (DEFAULT DESC)', () => request
@@ -488,7 +485,7 @@ describe('/api', () => {
         body: 'this article changed my life xoxo',
       };
       return request
-        .post('/api/articles/1/comments')
+        .post('/api/articles/2/comments')
         .send(newComment)
         .expect(201)
         .then(({ body }) => {
@@ -536,12 +533,14 @@ describe('/api', () => {
         });
     });
 
-    // check that this is what is meant by no body
+
     it('PATCH status: 200 if no body is given to the vote', () => {
       let newVote;
-      return request.patch('/api/articles/1/comments/18').send({ inc_votes: newVote }).expect(200);
+      return request.patch('/api/articles/1/comments/18').send({ inc_votes: newVote }).expect(200).then(({ body }) => {
+        expect(body.comment.votes).to.equal(16);
+      });
     });
-    it('PATCH status: 404 when a non-existent article id is used', () => request.patch('/api/articles/234092842/comments/1').expect(404));
+    it('PATCH status: 404 when a non-existent article id is used', () => request.patch('/api/articles/23402/comments/1').expect(404));
     it('PATCH status: 400 if given invalid vote input', () => {
       const newVote = 'hotdogs';
       return request
@@ -554,14 +553,14 @@ describe('/api', () => {
       return request
         .patch('/api/articles/88989/comments/1')
         .send({ inc_votes: newVote })
-        .expect(400);
+        .expect(404);
     });
-    it('PATCH status: 400 when an invalid comment id is passed', () => {
+    it('PATCH status: 404 when an invalid comment id is passed', () => {
       const newVote = 30;
       return request
         .patch('/api/articles/1/comments/509')
         .send({ inc_votes: newVote })
-        .expect(400);
+        .expect(404);
     });
 
     it('DELETE status: 204 removes a comment from an article by its ID', () => {
@@ -652,12 +651,13 @@ describe('/api', () => {
         );
       }));
 
+
     it('GET status: 200 returns the total number of articles by user', () => request
       .get('/api/users/icellusedkars/articles')
       .expect(200)
       .then(({ body }) => {
-        expect(body.total_count[0]).to.contain.keys('total_count');
-        expect(body.total_count[0].total_count).to.equal('6');
+        expect(body).to.contain.keys('total_count');
+        expect(body.total_count).to.equal(6);
       }));
 
     it('GET status: 200 returns a limited number of articles belonging to a user (DEFUALT CASE)', () => request
