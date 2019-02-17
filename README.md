@@ -1,6 +1,6 @@
 # NC KNEWS
 
-This is a news API where a front-end will be built. It includes topics, articles, article comments, and users.
+This is a news API where a front-end will be built. It includes topics, articles, article comments, and users. The deployed version of this API is available on <a href="https://l-w-news.herokuapp.com/api">Heroku.</a>
 
 ## Getting Started
 
@@ -62,8 +62,6 @@ it('GET status: 200 responds with array of topic objects', () => request
           expect(res.body.topics[0]).to.contains.keys('slug', 'description');
         }));
 ```
-
-
 
 ## Built With
 
