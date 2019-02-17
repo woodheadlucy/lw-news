@@ -1,5 +1,4 @@
 node_modules
-knexfile.js
+
 config
-output.txt
-db/query.sql
+
