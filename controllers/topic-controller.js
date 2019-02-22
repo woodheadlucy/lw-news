@@ -27,7 +27,6 @@ exports.addTopic = (req, res, next) => {
     .catch(next);
 };
 
-
 exports.getArticlesByTopic = (req, res, next) => {
   const { topic } = req.params;
 
@@ -51,14 +50,13 @@ exports.getArticlesByTopic = (req, res, next) => {
     fetchArticlesByTopic(topic, limit, sort_by, p, order),
   ])
     .then(([total_count, articles]) => {
-      if (total_count.length === 0 || !articles.length) {
-        return Promise.reject({ status: 404, message: 'article not found' });
-      }
-      return res.status(200).send({ total_count, articles });
+      // if (total_count.length === 0 || !articles.length) {
+      //   return Promise.reject({ status: 404, message: 'articles not found' });
+      // }
+      res.status(200).send({ total_count, articles });
     })
-    .catch(next);
+    .catch(err => console.log(err));
 };
-
 
 exports.addArticle = (req, res, next) => {
   const { title, author, body } = req.body;
